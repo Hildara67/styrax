@@ -142,7 +142,9 @@
     },
     generarRecomendacionesTodas: async () => {
       const generadas = [];
+      const idsConPendiente = new Set(recomendaciones.filter(r => r.estado === 'PENDIENTE').map(r => r.parcelaId));
       for (const p of parcelas) {
+        if (idsConPendiente.has(p.id)) continue;
         const lect = lecturas.find(l => l.parcelaId === p.id);
         if (!lect) continue;
         const eto = ETO_BASE[etoIdx % ETO_BASE.length];
