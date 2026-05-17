@@ -114,6 +114,8 @@
     listarRecomendacionesPendientes: async () => recomendaciones.filter(r => r.estado === 'PENDIENTE'),
     listarRecomendaciones: async () => recomendaciones,
     generarRecomendacion: async (data) => {
+      const yaPendiente = recomendaciones.some(r => r.parcelaId === data.parcelaId && r.estado === 'PENDIENTE');
+      if (yaPendiente) return { success: true, mantenimiento: true, recomendacion: { accion: 'MANTENER', mensaje: 'Ya existe una recomendación pendiente para esta parcela' } };
       const eto = ETO_BASE[etoIdx % ETO_BASE.length];
       const cfg = configs[data.parcelaId];
       const umbralMin = cfg ? cfg.umbral_min : 40;
