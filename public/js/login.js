@@ -41,7 +41,7 @@ togglePassword.addEventListener('click', function() {
 });
 
 if (!window.api) {
-  errorMessage.textContent = 'Error: La aplicación no se está ejecutando en Electron. Usa "npm start" para iniciar.';
+  errorMessage.textContent = 'Error cargando la aplicación. Intenta recargar la página.';
   errorMessage.classList.add('show');
   btnIngresar.disabled = true;
 }

@@ -213,14 +213,21 @@
     exportarRespaldo: async () => ({ success: true }),
   };
 
-  // ====== Override window.api ======
-  // Some pages try to access api before mock loads; use a Proxy to queue calls
+  // ====== Setup window.api for web demo ======
+  // Only add mock functions if they don't already exist (e.g. from Electron contextBridge)
   if (!window.api) {
     window.api = {};
   }
-  // Shallow-merge: copy all mock functions onto existing window.api
+  let installed = 0;
   for (const key of Object.keys(api)) {
-    window.api[key] = api[key];
+    if (typeof window.api[key] !== 'function') {
+      window.api[key] = api[key];
+      installed++;
+    }
   }
-  console.log('[Mock-API] Mock functions installed for ' + Object.keys(api).length + ' IPC calls');
+  if (installed > 0) {
+    console.log('[Mock-API] Mock functions installed for ' + installed + ' IPC calls');
+  } else {
+    console.log('[Mock-API] Real Electron API detected, mock functions skipped');
+  }
 })();

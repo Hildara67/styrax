@@ -2,10 +2,205 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=public/index.html">
-  <title>Redirigiendo...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Inteligente de Control de Riego</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+    nav .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: #0F251E; text-decoration: none; }
+    nav .logo img { height: 40px; }
+    nav .nav-btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+    nav .nav-btn-primary { background: #1a5c3a; color: #fff; }
+    nav .nav-btn-primary:hover { background: #0F251E; }
+
+    .hero { padding: 80px 24px 100px; text-align: center; background: linear-gradient(135deg, #f0f7f0 0%, #e8f0e0 40%, #d4e8d4 100%); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 50%, rgba(26,92,58,0.04) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(104,118,72,0.04) 0%, transparent 50%); }
+    .hero .container { position: relative; }
+    .hero-badge { display: inline-block; padding: 8px 18px; background: rgba(26,92,58,0.1); color: #1a5c3a; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 24px; letter-spacing: 0.3px; }
+    .hero h1 { font-size: clamp(36px, 6vw, 60px); font-weight: 900; line-height: 1.15; margin-bottom: 20px; color: #0F251E; letter-spacing: -1px; }
+    .hero h1 span { color: #1a5c3a; }
+    .hero p { font-size: clamp(16px, 2vw, 20px); color: #4a5568; max-width: 680px; margin: 0 auto 36px; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: #1a5c3a; color: #fff; box-shadow: 0 4px 16px rgba(26,92,58,0.3); }
+    .btn-primary:hover { background: #0F251E; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,92,58,0.35); }
+    .btn-secondary { background: #fff; color: #1a5c3a; border: 2px solid #d4e8d4; }
+    .btn-secondary:hover { border-color: #1a5c3a; transform: translateY(-2px); }
+
+    .hero-mockup { margin-top: 60px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); max-width: 900px; width: 100%; border: 1px solid rgba(0,0,0,0.06); }
+
+    section { padding: 80px 24px; }
+    .section-label { display: inline-block; text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #1a5c3a; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 16px; color: #0F251E; letter-spacing: -0.5px; }
+    .section-sub { font-size: 18px; color: #4a5568; max-width: 600px; margin-bottom: 48px; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .feature-card { padding: 32px; border-radius: 14px; background: #fff; border: 1px solid #e8f0e0; transition: all 0.25s; }
+    .feature-card:hover { border-color: #1a5c3a; box-shadow: 0 8px 32px rgba(26,92,58,0.08); transform: translateY(-4px); }
+    .feature-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #0F251E; }
+    .feature-card p { font-size: 14px; color: #4a5568; }
+
+    .benefits { background: #0F251E; color: #fff; }
+    .benefits .section-label { color: #a5d6a7; }
+    .benefits .section-title { color: #fff; }
+    .benefits .section-sub { color: rgba(255,255,255,0.6); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .benefit-card { padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+    .benefit-card .number { font-size: 36px; font-weight: 900; color: #a5d6a7; margin-bottom: 8px; }
+    .benefit-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .benefit-card p { font-size: 14px; color: rgba(255,255,255,0.6); }
+
+    .tech { text-align: center; background: #f8faf8; }
+    .tech-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .tech-item { padding: 20px 28px; background: #fff; border-radius: 10px; border: 1px solid #e8f0e0; font-weight: 600; font-size: 15px; color: #0F251E; }
+
+    .demo-cta { text-align: center; background: linear-gradient(135deg, #1a5c3a, #0F251E); color: #fff; padding: 100px 24px; }
+    .demo-cta h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 16px; }
+    .demo-cta p { font-size: 18px; color: rgba(255,255,255,0.7); margin-bottom: 36px; max-width: 560px; margin-left: auto; margin-right: auto; }
+    .demo-cta .btn-primary { background: #fff; color: #0F251E; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .demo-cta .btn-primary:hover { background: #e8f0e0; transform: translateY(-2px); }
+    .demo-cta .credentials { margin-top: 20px; font-size: 14px; color: rgba(255,255,255,0.5); }
+    .demo-cta .credentials strong { color: rgba(255,255,255,0.7); }
+
+    footer { padding: 40px 24px; text-align: center; color: #4a5568; font-size: 14px; background: #f8faf8; }
+    footer a { color: #1a5c3a; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 60px 16px 80px; }
+      section { padding: 60px 16px; }
+      .hero-mockup { margin-top: 40px; }
+      nav .logo span { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo a <a href="public/index.html">Sistema de Riego</a>...</p>
+
+<nav>
+  <a href="#" class="logo">
+    <img src="logosolo.png" alt="Logo">
+    <span>Sistema Riego</span>
+  </a>
+  <a href="public/index.html" class="nav-btn nav-btn-primary">Demo</a>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">v1.0 — Agricultura Inteligente</div>
+    <h1>Control Inteligente de <span>Riego Agrícola</span></h1>
+    <p>Optimiza el consumo de agua en tus cultivos con inteligencia basada en la metodología FAO-56, datos climáticos en tiempo real y automatización de decisiones.</p>
+    <div class="hero-buttons">
+      <a href="public/index.html" class="btn btn-primary">Probar Demo →</a>
+      <a href="#features" class="btn btn-secondary">Características</a>
+    </div>
+    <img src="logosolo.png" alt="Dashboard preview" class="hero-mockup" style="max-width:300px;border-radius:50%;padding:20px;background:rgba(255,255,255,0.3);">
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="section-label">Características</div>
+    <h2 class="section-title">Todo lo que necesitas para gestionar tu riego</h2>
+    <p class="section-sub">Un sistema completo diseñado para optimizar el agua en la agricultura.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8f0e0;">🌱</div>
+        <h3>Monitoreo en Tiempo Real</h3>
+        <p>Visualiza la humedad del suelo, temperatura y humedad relativa de todas tus parcelas en un solo panel.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fef0e4;">🌤</div>
+        <h3>Datos Climáticos Reales</h3>
+        <p>Integración con API NASA POWER para obtener datos meteorológicos precisos y calcular la evapotranspiración.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e4ede3;">🧠</div>
+        <h3>Recomendaciones Automáticas</h3>
+        <p>Basadas en la metodología FAO-56, el sistema genera recomendaciones precisas de cuándo y cuánto regar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e6eef2;">📊</div>
+        <h3>Reportes y Estadísticas</h3>
+        <p>Genera reportes detallados, exporta a CSV y visualiza el historial completo de lecturas y acciones.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fce8e6;">🔔</div>
+        <h3>Alertas y Notificaciones</h3>
+        <p>Recibe alertas cuando los niveles de humedad están fuera de los umbrales óptimos configurados.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#efe6dc;">👥</div>
+        <h3>Multi-Usuario y Roles</h3>
+        <p>Sistema con roles de SUPERVISOR y OPERADOR, cada uno con permisos y vistas personalizadas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="container">
+    <div class="section-label">Beneficios</div>
+    <h2 class="section-title">Resultados comprobados en el campo</h2>
+    <p class="section-sub">Diseñado para productores agrícolas que buscan eficiencia y sostenibilidad.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="number">30%</div>
+        <h4>Ahorro de Agua</h4>
+        <p>Optimización del riego basada en datos reales y umbrales inteligentes.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="number">FAO-56</div>
+        <h4>Metodología Científica</h4>
+        <p>Basado en el estándar internacional de la FAO para el cálculo de necesidades hídricas.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="number">24/7</div>
+        <h4>Monitoreo Continuo</h4>
+        <p>Supervisión automatizada con generación de recomendaciones cada hora.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="number">100%</div>
+        <h4>Software Libre</h4>
+        <p>Código abierto, sin costos de licencia, personalizable a tus necesidades.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tech">
+  <div class="container">
+    <div class="section-label">Stack Tecnológico</div>
+    <h2 class="section-title">Tecnologías utilizadas</h2>
+    <div class="tech-grid">
+      <div class="tech-item">⚡ Electron.js</div>
+      <div class="tech-item">🟢 Node.js</div>
+      <div class="tech-item">🗄 MariaDB</div>
+      <div class="tech-item">🌐 NASA POWER API</div>
+      <div class="tech-item">📄 HTML5 / CSS3 / JS</div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-cta">
+  <div class="container">
+    <h2>¿Listo para probarlo?</h2>
+    <p>Accede a la demo funcional con datos simulados. Sin instalación, sin registro.</p>
+    <a href="public/index.html" class="btn btn-primary">Probar Demo en Vivo →</a>
+    <div class="credentials">Demo: <strong>admin</strong> / <strong>admin123</strong> (Supervisor) | <strong>operador1</strong> / <strong>operador123</strong> (Operador)</div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Sistema Inteligente de Control de Riego — Proyecto de código abierto</p>
+  </div>
+</footer>
+
 </body>
 </html>
