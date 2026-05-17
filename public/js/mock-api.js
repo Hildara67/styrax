@@ -1,5 +1,20 @@
 (function() {
-  // ====== Mock Data ======
+  const STORAGE_KEY = 'sistema_riego_data';
+
+  function cargarData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return null;
+  }
+
+  function guardarData(data) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (_) {}
+  }
+
   const parcelas = [
     { id: 1, nombre: 'Parcela Norte', areaM2: 1500, cultivo: 'Maíz' },
     { id: 2, nombre: 'Parcela Sur', areaM2: 2000, cultivo: 'Trigo' },
@@ -17,37 +32,45 @@
 
   const ETO_BASE = [5.2, 5.8, 6.3, 5.5, 6.0, 4.9, 6.5, 5.1];
   let etoIdx = 0;
-  let lecturas = [];
-  let recomendaciones = [];
-  let nextRecId = 100;
+
+  const saved = cargarData();
+  let lecturas = (saved && saved.lecturas) ? saved.lecturas : [];
+  let recomendaciones = (saved && saved.recomendaciones) ? saved.recomendaciones : [];
+  let nextRecId = (saved && saved.nextRecId) ? saved.nextRecId : 100;
+
+  function persistir() {
+    guardarData({ lecturas, recomendaciones, nextRecId });
+  }
 
   function rand(min, max) { return Math.round((min + Math.random() * (max - min)) * 10) / 10; }
   function ahora() { return new Date().toISOString().replace('T', ' ').slice(0, 19); }
 
-  // Seed lecturas iniciales
-  for (const p of parcelas) {
-    const hum = p.id === 1 ? 68 : p.id === 2 ? 82 : 33;
-    lecturas.push({
-      id: p.id, parcelaId: p.id, humedadSuelo: hum, temperaturaAmbiente: p.id === 1 ? 28 : p.id === 2 ? 27 : 29,
-      humedadRelativa: p.id === 1 ? 45 : p.id === 2 ? 52 : 38, origen: 'MANUAL', esValida: true,
-      usuarioRegistro: 2, timestampRegistro: ahora(), nombreParcela: p.nombre
-    });
+  function seedLecturas() {
+    if (lecturas.length > 0) return;
+    for (const p of parcelas) {
+      const hum = p.id === 1 ? 68 : p.id === 2 ? 82 : 33;
+      lecturas.push({
+        id: p.id, parcelaId: p.id, humedadSuelo: hum,
+        temperaturaAmbiente: p.id === 1 ? 28 : p.id === 2 ? 27 : 29,
+        humedadRelativa: p.id === 1 ? 45 : p.id === 2 ? 52 : 38,
+        origen: 'MANUAL', esValida: true,
+        usuarioRegistro: 2, timestampRegistro: ahora(), nombreParcela: p.nombre
+      });
+    }
+    persistir();
   }
+  seedLecturas();
 
-  // ====== Build mock API ======
   const api = {
-    // ====== Autenticación ======
     login: async (creds) => {
       const username = creds.usuario || creds.nombre;
       const password = creds.password || creds.contrasena;
       const u = usuarios.find(x => x.nombre === username && x.password === password);
       if (!u) return { success: false, error: 'Credenciales incorrectas' };
-      const user = { id: u.id, nombre: u.nombre, rol: u.rol };
-      sessionStorage.setItem('usuario', JSON.stringify(user));
-      return { success: true, usuario: user };
+      sessionStorage.setItem('usuario', JSON.stringify({ id: u.id, nombre: u.nombre, rol: u.rol }));
+      return { success: true, usuario: { id: u.id, nombre: u.nombre, rol: u.rol } };
     },
 
-    // ====== Parcelas ======
     listarParcelas: async () => [...parcelas],
     crearParcela: async (data) => {
       const id = parcelas.length + 1;
@@ -65,11 +88,8 @@
       return { success: true };
     },
     contarParcelas: async () => parcelas.length,
-    resumenParcelas: async () => {
-      return { total: parcelas.length, conRiego: recomendaciones.filter(r => r.accion === 'APLICAR_RIEGO').length };
-    },
+    resumenParcelas: async () => ({ total: parcelas.length, conRiego: recomendaciones.filter(r => r.accion === 'APLICAR_RIEGO').length }),
 
-    // ====== Lecturas ======
     insertarLectura: async (data) => {
       const id = lecturas.length + 1;
       const p = parcelas.find(x => x.id === data.parcelaId);
@@ -79,6 +99,7 @@
         origen: 'MANUAL', esValida: true, usuarioRegistro: data.usuarioRegistro,
         timestampRegistro: ahora(), nombreParcela: p ? p.nombre : ''
       });
+      persistir();
       return { success: true, id };
     },
     ultimasLecturas: async () => lecturas,
@@ -87,14 +108,9 @@
       if (filtros?.parcelaId) r = r.filter(l => l.parcelaId === filtros.parcelaId);
       return r;
     },
-    indicadoresLecturas: async () => {
-      return { optimas: 1, alertas: 1, deficit: 1 };
-    },
-    estadisticasLecturas: async () => {
-      return { total: lecturas.length, optimas: 1, alertas: 1, deficit: 1 };
-    },
+    indicadoresLecturas: async () => ({ optimas: 1, alertas: 1, deficit: 1 }),
+    estadisticasLecturas: async () => ({ total: lecturas.length, optimas: 1, alertas: 1, deficit: 1 }),
 
-    // ====== Recomendaciones ======
     listarRecomendacionesPendientes: async () => recomendaciones.filter(r => r.estado === 'PENDIENTE'),
     listarRecomendaciones: async () => recomendaciones,
     generarRecomendacion: async (data) => {
@@ -104,8 +120,7 @@
       const umbralMax = cfg ? cfg.umbral_max : 80;
       const kc = cfg ? cfg.kc_actual : 1.0;
       const area = data.config?.areaM2 || 100;
-      const etc = kc * eto;
-      const balance = data.humedad - etc;
+      const balance = data.humedad - (kc * eto);
       let accion = 'MANTENER';
       if (balance < umbralMin) accion = 'APLICAR_RIEGO';
       else if (balance > umbralMax) accion = 'DETENER_RIEGO';
@@ -122,9 +137,10 @@
         nombre_parcela: p ? p.nombre : '', volumen_sugerido_L: vol
       };
       recomendaciones.push(rec);
+      persistir();
       return { success: true, id, recomendacion: rec };
     },
-    generarRecomendacionesTodas: async (usuarioRegistro) => {
+    generarRecomendacionesTodas: async () => {
       const generadas = [];
       for (const p of parcelas) {
         const lect = lecturas.find(l => l.parcelaId === p.id);
@@ -132,8 +148,7 @@
         const eto = ETO_BASE[etoIdx % ETO_BASE.length];
         const cfg = configs[p.id];
         const umbralMin = cfg ? cfg.umbral_min : 40;
-        const etc = (cfg ? cfg.kc_actual : 1.0) * eto;
-        const balance = lect.humedadSuelo - etc;
+        const balance = lect.humedadSuelo - ((cfg ? cfg.kc_actual : 1.0) * eto);
         let accion = 'MANTENER';
         if (balance < umbralMin) accion = 'APLICAR_RIEGO';
         else if (balance > (cfg ? cfg.umbral_max : 80)) accion = 'DETENER_RIEGO';
@@ -150,11 +165,12 @@
         });
         generadas.push({ id, parcelaId: p.id, nombre: p.nombre, accion, urgencia: urg, volumen: vol });
       }
+      if (generadas.length > 0) persistir();
       return { success: true, generadas };
     },
     enviarValidacion: async (id, usuario) => {
       const r = recomendaciones.find(x => x.id === id);
-      if (r) r.usuarioAprobador = usuario;
+      if (r) { r.usuarioAprobador = usuario; persistir(); }
       return { success: true };
     },
     aprobarRecomendacion: async (id, usuario) => {
@@ -166,55 +182,51 @@
           if (r.accion === 'APLICAR_RIEGO') lect.humedadSuelo = Math.min(lect.humedadSuelo + 30 + rand(0, 10), 95);
           else if (r.accion === 'DETENER_RIEGO') lect.humedadSuelo = Math.max(lect.humedadSuelo - 25, configs[r.parcelaId]?.umbral_min || 40);
         }
+        persistir();
       }
       return { success: true };
     },
     rechazarRecomendacion: async (id) => {
       const r = recomendaciones.find(x => x.id === id);
-      if (r) r.estado = 'RECHAZADA';
+      if (r) { r.estado = 'RECHAZADA'; persistir(); }
       return { success: true };
     },
-    estadisticasRecomendaciones: async () => {
-      return { pendientes: recomendaciones.filter(r => r.estado === 'PENDIENTE').length, ejecutadas: recomendaciones.filter(r => r.estado === 'EJECUTADA').length, rechazadas: recomendaciones.filter(r => r.estado === 'RECHAZADA').length };
-    },
+    estadisticasRecomendaciones: async () => ({
+      pendientes: recomendaciones.filter(r => r.estado === 'PENDIENTE').length,
+      ejecutadas: recomendaciones.filter(r => r.estado === 'EJECUTADA').length,
+      rechazadas: recomendaciones.filter(r => r.estado === 'RECHAZADA').length
+    }),
 
-    // ====== Configuración ======
     obtenerConfig: async (parcelaId) => configs[parcelaId] || null,
     guardarConfig: async (data) => {
       configs[data.parcelaId] = { ...configs[data.parcelaId], ...data };
       return { success: true };
     },
-    probarAPI: async () => { return { exito: false, mensaje: 'API no disponible en demo web' }; },
-    probarBD: async () => { return { exito: true, mensaje: 'Mock DB conectada' }; },
+    probarAPI: async () => ({ exito: false, mensaje: 'API no disponible en demo web' }),
+    probarBD: async () => ({ exito: true, mensaje: 'Mock DB conectada' }),
 
-    // ====== Usuarios ======
     listarUsuarios: async () => usuarios.map(u => ({ id: u.id, nombre: u.nombre, rol: u.rol, activo: true })),
     crearUsuario: async (data) => {
       const id = usuarios.length + 1;
       usuarios.push({ id, nombre: data.nombre, rol: data.rol, password: data.password });
       return { success: true, id };
     },
-    desactivarUsuario: async (id) => { return { success: true }; },
+    desactivarUsuario: async () => ({ success: true }),
     listarOperadores: async () => usuarios.filter(u => u.rol === 'OPERADOR'),
 
-    // ====== CSV ======
     leerCSV: async () => ({ success: false, lecturas: [] }),
     importarAutoCSV: async () => ({ insertados: {} }),
 
-    // ====== API Clima ======
-    consultarET0: async (parcelaId) => {
+    consultarET0: async () => {
       const eto = ETO_BASE[etoIdx % ETO_BASE.length];
       return { success: true, et0: eto, precipitacion: 0.0, temperatura: 28.0, condicion: 'normal' };
     },
 
-    // ====== Exportación ======
     exportarCSV: async () => ({ success: true }),
     exportarCSVDialog: async () => ({ success: true, canceled: false }),
     exportarRespaldo: async () => ({ success: true }),
   };
 
-  // ====== Setup window.api for web demo ======
-  // Only add mock functions if they don't already exist (e.g. from Electron contextBridge)
   if (!window.api) {
     window.api = {};
   }
