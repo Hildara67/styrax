@@ -1,5 +1,19 @@
 (function() {
   const STORAGE_KEY = 'sistema_riego_data';
+  const SEMILLA_PARCELAS = [
+    { id: 1, nombre: 'Parcela Norte', areaM2: 1500, cultivo: 'Maíz' },
+    { id: 2, nombre: 'Parcela Sur', areaM2: 2000, cultivo: 'Trigo' },
+    { id: 3, nombre: 'Parcela Este', areaM2: 1200, cultivo: 'Soya' },
+  ];
+  const SEMILLA_CONFIGS = {
+    1: { id: 1, parcelaId: 1, umbral_min: 40, umbral_max: 80, kc_actual: 1.15 },
+    2: { id: 2, parcelaId: 2, umbral_min: 35, umbral_max: 75, kc_actual: 1.00 },
+    3: { id: 3, parcelaId: 3, umbral_min: 45, umbral_max: 85, kc_actual: 1.20 },
+  };
+  const usuarios = [
+    { id: 1, nombre: 'admin', rol: 'SUPERVISOR', password: 'admin123' },
+    { id: 2, nombre: 'operador1', rol: 'OPERADOR', password: 'operador123' },
+  ];
 
   function cargarData() {
     try {
@@ -15,31 +29,18 @@
     } catch (_) {}
   }
 
-  const parcelas = [
-    { id: 1, nombre: 'Parcela Norte', areaM2: 1500, cultivo: 'Maíz' },
-    { id: 2, nombre: 'Parcela Sur', areaM2: 2000, cultivo: 'Trigo' },
-    { id: 3, nombre: 'Parcela Este', areaM2: 1200, cultivo: 'Soya' },
-  ];
-  const usuarios = [
-    { id: 1, nombre: 'admin', rol: 'SUPERVISOR', password: 'admin123' },
-    { id: 2, nombre: 'operador1', rol: 'OPERADOR', password: 'operador123' },
-  ];
-  const configs = {
-    1: { id: 1, parcelaId: 1, umbral_min: 40, umbral_max: 80, kc_actual: 1.15 },
-    2: { id: 2, parcelaId: 2, umbral_min: 35, umbral_max: 75, kc_actual: 1.00 },
-    3: { id: 3, parcelaId: 3, umbral_min: 45, umbral_max: 85, kc_actual: 1.20 },
-  };
-
   const ETO_BASE = [5.2, 5.8, 6.3, 5.5, 6.0, 4.9, 6.5, 5.1];
   let etoIdx = 0;
 
   const saved = cargarData();
+  const parcelas = (saved && saved.parcelas) ? saved.parcelas : JSON.parse(JSON.stringify(SEMILLA_PARCELAS));
+  const configs = (saved && saved.configs) ? saved.configs : JSON.parse(JSON.stringify(SEMILLA_CONFIGS));
   let lecturas = (saved && saved.lecturas) ? saved.lecturas : [];
   let recomendaciones = (saved && saved.recomendaciones) ? saved.recomendaciones : [];
   let nextRecId = (saved && saved.nextRecId) ? saved.nextRecId : 100;
 
   function persistir() {
-    guardarData({ lecturas, recomendaciones, nextRecId });
+    guardarData({ parcelas, configs, lecturas, recomendaciones, nextRecId });
   }
 
   function rand(min, max) { return Math.round((min + Math.random() * (max - min)) * 10) / 10; }
