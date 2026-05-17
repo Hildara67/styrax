@@ -3,78 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Inteligente de Control de Riego</title>
+  <title>STYRAX — Sistema Inteligente de Control de Riego</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: #1E3B47; background: #fff; line-height: 1.6; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
-    nav .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: #0F251E; text-decoration: none; }
-    nav .logo img { height: 40px; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+    nav .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; color: #1E3B47; text-decoration: none; letter-spacing: -0.5px; }
+    nav .logo img { height: 36px; }
+    nav .logo .styrax { color: #1E3B47; }
     nav .nav-btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.2s; }
-    nav .nav-btn-primary { background: #1a5c3a; color: #fff; }
+    nav .nav-btn-primary { background: #1E3B47; color: #fff; }
     nav .nav-btn-primary:hover { background: #0F251E; }
 
-    .hero { padding: 80px 24px 100px; text-align: center; background: linear-gradient(135deg, #f0f7f0 0%, #e8f0e0 40%, #d4e8d4 100%); position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 50%, rgba(26,92,58,0.04) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(104,118,72,0.04) 0%, transparent 50%); }
+    .hero { padding: 100px 24px 120px; text-align: center; background: linear-gradient(180deg, #AEC5D1 0%, #D4E0E8 35%, #F2ECE0 100%); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 30% 50%, rgba(30,59,71,0.04) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(174,197,209,0.08) 0%, transparent 50%); }
     .hero .container { position: relative; }
-    .hero-badge { display: inline-block; padding: 8px 18px; background: rgba(26,92,58,0.1); color: #1a5c3a; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 24px; letter-spacing: 0.3px; }
-    .hero h1 { font-size: clamp(36px, 6vw, 60px); font-weight: 900; line-height: 1.15; margin-bottom: 20px; color: #0F251E; letter-spacing: -1px; }
-    .hero h1 span { color: #1a5c3a; }
-    .hero p { font-size: clamp(16px, 2vw, 20px); color: #4a5568; max-width: 680px; margin: 0 auto 36px; }
+    .hero h1 { font-size: clamp(36px, 6vw, 56px); font-weight: 900; line-height: 1.15; margin-bottom: 16px; color: #1E3B47; letter-spacing: -1px; }
+    .hero h1 .highlight { color: #0F251E; background: linear-gradient(135deg, #1E3B47, #0F251E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero .tagline { font-size: clamp(18px, 2.5vw, 24px); font-weight: 700; color: #1E3B47; margin-bottom: 12px; }
+    .hero .subtagline { font-size: 15px; color: #4a6a7a; max-width: 600px; margin: 0 auto 32px; font-weight: 400; }
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .btn { padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary { background: #1a5c3a; color: #fff; box-shadow: 0 4px 16px rgba(26,92,58,0.3); }
-    .btn-primary:hover { background: #0F251E; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,92,58,0.35); }
-    .btn-secondary { background: #fff; color: #1a5c3a; border: 2px solid #d4e8d4; }
-    .btn-secondary:hover { border-color: #1a5c3a; transform: translateY(-2px); }
-
-    .hero-mockup { margin-top: 60px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); max-width: 900px; width: 100%; border: 1px solid rgba(0,0,0,0.06); }
+    .btn-primary { background: #1E3B47; color: #fff; box-shadow: 0 4px 16px rgba(30,59,71,0.3); }
+    .btn-primary:hover { background: #0F251E; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(30,59,71,0.35); }
+    .btn-secondary { background: #fff; color: #1E3B47; border: 2px solid #AEC5D1; }
+    .btn-secondary:hover { border-color: #1E3B47; transform: translateY(-2px); }
 
     section { padding: 80px 24px; }
-    .section-label { display: inline-block; text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #1a5c3a; margin-bottom: 12px; }
-    .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 16px; color: #0F251E; letter-spacing: -0.5px; }
-    .section-sub { font-size: 18px; color: #4a5568; max-width: 600px; margin-bottom: 48px; }
+    .section-label { display: inline-block; text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #1E3B47; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 16px; color: #1E3B47; letter-spacing: -0.5px; }
+    .section-sub { font-size: 18px; color: #4a6a7a; max-width: 600px; margin-bottom: 48px; }
+
+    .etymology { background: #F2ECE0; text-align: center; padding: 100px 24px; position: relative; }
+    .etymology .container { max-width: 800px; }
+    .etymology .big-name { font-size: clamp(48px, 8vw, 80px); font-weight: 900; color: #1E3B47; letter-spacing: 4px; margin-bottom: 24px; }
+    .etymology .big-name .drop { display: inline-block; }
+    .etymology .sub { font-size: 16px; color: #4a6a7a; margin-bottom: 40px; font-weight: 500; }
+    .etym-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .etym-card { padding: 28px; border-radius: 12px; background: #fff; border: 1px solid #D4E0E8; }
+    .etym-card .etym-lang { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #AEC5D1; letter-spacing: 1px; margin-bottom: 4px; }
+    .etym-card .etym-word { font-size: 28px; font-weight: 800; color: #1E3B47; margin-bottom: 4px; }
+    .etym-card .etym-meaning { font-size: 15px; color: #4a6a7a; }
+    .etym-divider { width: 40px; height: 3px; margin: 0 auto 28px; background: linear-gradient(90deg, #AEC5D1, #1E3B47); border-radius: 2px; }
+    .etym-result { font-size: 18px; color: #1E3B47; font-weight: 600; padding: 20px; background: rgba(30,59,71,0.06); border-radius: 12px; border: 1px solid rgba(30,59,71,0.1); }
+    .etym-result strong { color: #1E3B47; }
 
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .feature-card { padding: 32px; border-radius: 14px; background: #fff; border: 1px solid #e8f0e0; transition: all 0.25s; }
-    .feature-card:hover { border-color: #1a5c3a; box-shadow: 0 8px 32px rgba(26,92,58,0.08); transform: translateY(-4px); }
+    .feature-card { padding: 32px; border-radius: 14px; background: #fff; border: 1px solid #D4E0E8; transition: all 0.25s; }
+    .feature-card:hover { border-color: #1E3B47; box-shadow: 0 8px 32px rgba(30,59,71,0.08); transform: translateY(-4px); }
     .feature-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
-    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #0F251E; }
-    .feature-card p { font-size: 14px; color: #4a5568; }
+    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #1E3B47; }
+    .feature-card p { font-size: 14px; color: #4a6a7a; }
 
-    .benefits { background: #0F251E; color: #fff; }
-    .benefits .section-label { color: #a5d6a7; }
+    .benefits { background: #1E3B47; color: #fff; }
+    .benefits .section-label { color: #AEC5D1; }
     .benefits .section-title { color: #fff; }
     .benefits .section-sub { color: rgba(255,255,255,0.6); }
     .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
     .benefit-card { padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
-    .benefit-card .number { font-size: 36px; font-weight: 900; color: #a5d6a7; margin-bottom: 8px; }
+    .benefit-card .number { font-size: 36px; font-weight: 900; color: #AEC5D1; margin-bottom: 8px; }
     .benefit-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
     .benefit-card p { font-size: 14px; color: rgba(255,255,255,0.6); }
 
-    .tech { text-align: center; background: #f8faf8; }
+    .tech { text-align: center; background: #F2ECE0; }
     .tech-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-    .tech-item { padding: 20px 28px; background: #fff; border-radius: 10px; border: 1px solid #e8f0e0; font-weight: 600; font-size: 15px; color: #0F251E; }
+    .tech-item { padding: 20px 28px; background: #fff; border-radius: 10px; border: 1px solid #D4E0E8; font-weight: 600; font-size: 15px; color: #1E3B47; }
 
-    .demo-cta { text-align: center; background: linear-gradient(135deg, #1a5c3a, #0F251E); color: #fff; padding: 100px 24px; }
+    .demo-cta { text-align: center; background: linear-gradient(180deg, #AEC5D1, #1E3B47); color: #fff; padding: 100px 24px; }
     .demo-cta h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 16px; }
     .demo-cta p { font-size: 18px; color: rgba(255,255,255,0.7); margin-bottom: 36px; max-width: 560px; margin-left: auto; margin-right: auto; }
-    .demo-cta .btn-primary { background: #fff; color: #0F251E; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-    .demo-cta .btn-primary:hover { background: #e8f0e0; transform: translateY(-2px); }
+    .demo-cta .btn-primary { background: #fff; color: #1E3B47; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .demo-cta .btn-primary:hover { background: #F2ECE0; transform: translateY(-2px); }
     .demo-cta .credentials { margin-top: 20px; font-size: 14px; color: rgba(255,255,255,0.5); }
     .demo-cta .credentials strong { color: rgba(255,255,255,0.7); }
 
-    footer { padding: 40px 24px; text-align: center; color: #4a5568; font-size: 14px; background: #f8faf8; }
-    footer a { color: #1a5c3a; text-decoration: none; }
+    footer { padding: 40px 24px; text-align: center; color: #4a6a7a; font-size: 14px; background: #F2ECE0; }
+    footer a { color: #1E3B47; text-decoration: none; }
 
     @media (max-width: 768px) {
       .hero { padding: 60px 16px 80px; }
       section { padding: 60px 16px; }
-      .hero-mockup { margin-top: 40px; }
-      nav .logo span { display: none; }
+      .etymology { padding: 60px 16px; }
+      .etym-grid { grid-template-columns: 1fr; }
+      nav .logo span.styrax-text { display: none; }
       .features-grid { grid-template-columns: 1fr; }
       .benefits-grid { grid-template-columns: 1fr; }
     }
@@ -84,22 +98,47 @@
 
 <nav>
   <a href="#" class="logo">
-    <img src="logosolo.png" alt="Logo">
-    <span>Sistema Riego</span>
+    <img src="logosolo.png" alt="STYRAX">
+    <span class="styrax-text">STYRAX</span>
   </a>
-  <a href="public/index.html" class="nav-btn nav-btn-primary">Demo</a>
+  <a href="public/index.html" class="nav-btn nav-btn-primary">Demo →</a>
 </nav>
 
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">v1.0 — Agricultura Inteligente</div>
-    <h1>Control Inteligente de <span>Riego Agrícola</span></h1>
-    <p>Optimiza el consumo de agua en tus cultivos con inteligencia basada en la metodología FAO-56, datos climáticos en tiempo real y automatización de decisiones.</p>
+    <h1><span class="highlight">STYRAX</span></h1>
+    <p class="tagline">El punto exacto donde controlas cada gota</p>
+    <p class="subtagline">Sistema Inteligente de Control de Riego basado en la metodología FAO-56, con datos climáticos en tiempo real y automatización de decisiones.</p>
     <div class="hero-buttons">
       <a href="public/index.html" class="btn btn-primary">Probar Demo →</a>
-      <a href="#features" class="btn btn-secondary">Características</a>
+      <a href="#etimologia" class="btn btn-secondary">Conoce el nombre</a>
     </div>
-    <img src="logosolo.png" alt="Dashboard preview" class="hero-mockup" style="max-width:300px;border-radius:50%;padding:20px;background:rgba(255,255,255,0.3);">
+  </div>
+</section>
+
+<section class="etymology" id="etimologia">
+  <div class="container">
+    <div class="section-label">Etimología</div>
+    <div class="big-name">STYRAX</div>
+    <div class="sub">El nombre nace de la unión de dos conceptos ancestrales</div>
+    <div class="etym-grid">
+      <div class="etym-card">
+        <div class="etym-lang">Latín — Stilla</div>
+        <div class="etym-word">💧 STILLA</div>
+        <div class="etym-meaning">"Gota" — no agua genérica, sino la gota como unidad precisa de medida</div>
+      </div>
+      <div class="etym-card">
+        <div class="etym-lang">Griego — Axis</div>
+        <div class="etym-word">🎯 AXIS</div>
+        <div class="etym-meaning">"Eje" — centro de precisión, todo gira alrededor de este punto</div>
+      </div>
+    </div>
+    <div class="etym-divider"></div>
+    <div class="etym-result">
+      <strong>Stilla + Axis = STYRAX</strong><br>
+      "El punto exacto donde controlas cada gota"<br>
+      <span style="font-size:14px;color:#4a6a7a;font-weight:400;">El eje de la gota — el centro de precisión para el riego inteligente</span>
+    </div>
   </div>
 </section>
 
@@ -110,32 +149,32 @@
     <p class="section-sub">Un sistema completo diseñado para optimizar el agua en la agricultura.</p>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon" style="background:#e8f0e0;">🌱</div>
+        <div class="feature-icon" style="background:#D4E0E8;">🌱</div>
         <h3>Monitoreo en Tiempo Real</h3>
         <p>Visualiza la humedad del suelo, temperatura y humedad relativa de todas tus parcelas en un solo panel.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#fef0e4;">🌤</div>
+        <div class="feature-icon" style="background:#D4E0E8;">🌤</div>
         <h3>Datos Climáticos Reales</h3>
         <p>Integración con API NASA POWER para obtener datos meteorológicos precisos y calcular la evapotranspiración.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#e4ede3;">🧠</div>
+        <div class="feature-icon" style="background:#D4E0E8;">🧠</div>
         <h3>Recomendaciones Automáticas</h3>
-        <p>Basadas en la metodología FAO-56, el sistema genera recomendaciones precisas de cuándo y cuánto regar.</p>
+        <p>Basadas en la metodología FAO-56, genera recomendaciones precisas de cuándo y cuánto regar.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#e6eef2;">📊</div>
+        <div class="feature-icon" style="background:#D4E0E8;">📊</div>
         <h3>Reportes y Estadísticas</h3>
         <p>Genera reportes detallados, exporta a CSV y visualiza el historial completo de lecturas y acciones.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#fce8e6;">🔔</div>
+        <div class="feature-icon" style="background:#D4E0E8;">🔔</div>
         <h3>Alertas y Notificaciones</h3>
         <p>Recibe alertas cuando los niveles de humedad están fuera de los umbrales óptimos configurados.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" style="background:#efe6dc;">👥</div>
+        <div class="feature-icon" style="background:#D4E0E8;">👥</div>
         <h3>Multi-Usuario y Roles</h3>
         <p>Sistema con roles de SUPERVISOR y OPERADOR, cada uno con permisos y vistas personalizadas.</p>
       </div>
@@ -198,7 +237,7 @@
 
 <footer>
   <div class="container">
-    <p>© 2026 Sistema Inteligente de Control de Riego — Proyecto de código abierto</p>
+    <p>© 2026 <strong>STYRAX</strong> — Sistema Inteligente de Control de Riego</p>
   </div>
 </footer>
 
