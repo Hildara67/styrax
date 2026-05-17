@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-supervisor">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoría - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="parcelas.html">Parcelas</a>
+        <a href="configuracion.html">Configuración</a>
+        <a href="auditoria.html" class="active">Auditoría</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="usuarios.html">Usuarios</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Auditoría y Validación</h1>
+
+    <div class="header-status">
+      <span>API: <span id="estadoAPI">🔴 Desconectado</span></span>
+      <span>Base de Datos: <span id="estadoBD">🔴 Desconectado</span></span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Recomendaciones pendientes de validar</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Parcela</th>
+              <th>Acción</th>
+              <th>Vol (L)</th>
+              <th>Operador</th>
+              <th>Validación</th>
+            </tr>
+          </thead>
+          <tbody id="tablaValidacion">
+            <tr><td colspan="7" style="text-align:center;color:var(--gris-400);">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='parcelas.html'">Gestionar Parcelas</button>
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='configuracion.html'">Configurar Umbrales</button>
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='reportes.html'">Reportes</button>
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='usuarios.html'">Usuarios</button>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">Bitácora de Auditoría</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Acción</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBitacora">
+            <tr><td colspan="5" style="text-align:center;color:var(--gris-400);">Sin registros de auditoría</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Cargando...</div>
+  </div>
+
+  <script src="js/auditoria.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

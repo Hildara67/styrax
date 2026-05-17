@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Riego - Iniciar Sesión</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="login-body">
+  <div id="loginIntro" class="login-intro">
+    <div class="intro-anim">
+      <img src="logo+nombre.png" width="300" alt="Sistema Riego" style="filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3)); max-width:80vw;">
+    </div>
+  </div>
+
+  <div id="loginMain" class="login-main">
+    <div class="login-brand">
+      <div class="brand-inner">
+        <img src="logosolo.png" class="brand-logo" width="150" height="150" alt="Sistema Riego">
+        <img src="nombresolo.png" class="brand-name-img" alt="nombre" style="max-width:100%;height:auto;">
+        <p class="brand-sub">Control de Riego Agrícola Inteligente</p>
+        <div class="brand-divider"></div>
+        <div class="brand-items">
+          <div class="brand-item">Monitoreo en tiempo real</div>
+          <div class="brand-item">Recomendaciones automatizadas</div>
+          <div class="brand-item">Optimización de recursos hídricos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="form-card">
+        <h2>Bienvenido</h2>
+        <p class="form-sub">Ingrese sus credenciales para continuar</p>
+        <div id="errorMessage" class="error-message"></div>
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="usuario">Usuario <span class="required">*</span></label>
+            <input type="text" id="usuario" placeholder="Nombre de usuario" required autofocus>
+          </div>
+          <div class="form-group">
+            <label for="password">Contraseña <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="Contraseña" required minlength="8">
+              <button type="button" class="toggle-password" id="togglePassword" tabindex="-1">👁</button>
+            </div>
+          </div>
+          <button type="submit" class="btn-login" id="btnIngresar" disabled>Ingresar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

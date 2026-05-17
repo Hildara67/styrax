@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-operador">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="captura.html">Capturar</a>
+        <a href="recomendaciones.html">Recomendaciones</a>
+        <a href="historial.html">Historial</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Panel de Control - Monitoreo General</h1>
+
+    <div id="detenerRiegoAlert" style="display:none;padding:14px 20px;border-radius:var(--radio);margin-bottom:20px;background:#e8eef0;border-left:4px solid var(--azul-petroleo);color:var(--azul-petroleo);font-weight:600;font-size:14px;animation:fadeInUp 0.4s ease;">
+      ⛔ <span id="detenerRiegoMsg"></span>
+    </div>
+
+    <div class="card-grid" id="indicadores">
+      <div class="stat-card">
+        <div class="stat-value" id="totalParcelas">-</div>
+        <div class="stat-label">Total Parcelas</div>
+      </div>
+      <div class="stat-card optimo">
+        <div class="stat-value" id="lecturasOptimas">-</div>
+        <div class="stat-label">Lecturas Óptimas (Hoy)</div>
+      </div>
+      <div class="stat-card alerta">
+        <div class="stat-value" id="alertasActivas">-</div>
+        <div class="stat-label">Alertas Activas</div>
+      </div>
+      <div class="stat-card deficit">
+        <div class="stat-value" id="deficitDetectado">-</div>
+        <div class="stat-label">Déficit Detectado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;">Estado Actual de Parcelas</div>
+        <div class="acciones-rapidas">
+          <button class="btn btn-primary btn-sm" onclick="window.location.href='captura.html'">+ Capturar Datos</button>
+          <button class="btn btn-secondary btn-sm" onclick="window.location.href='historial.html'">⏱ Historial</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Parcela</th>
+              <th>Humedad (%)</th>
+              <th>Temperatura (°C)</th>
+              <th>HR (%)</th>
+              <th>API Clima</th>
+              <th>Estado</th>
+              <th>Acción</th>
+              <th>Detalles</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEstado">
+            <tr><td colspan="8" style="text-align:center;color:var(--gris-400);">Cargando datos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:var(--gris-600);display:flex;gap:16px;">
+        <span><span class="estado-optimo">●</span> Óptimo (40-80%)</span>
+        <span><span class="estado-alerta">●</span> Alerta (30-39% o 81-90%)</span>
+        <span><span class="estado-deficit">●</span> Déficit (&lt;30% o &gt;90%)</span>
+      </div>
+    </div>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Cargando datos...</div>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

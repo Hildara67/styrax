@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-operador">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura de Datos - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="captura.html" class="active">Capturar</a>
+        <a href="recomendaciones.html">Recomendaciones</a>
+        <a href="historial.html">Historial</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Captura de Datos</h1>
+
+    <form id="capturaForm" novalidate>
+      <div class="card">
+        <div class="card-title">Configuración</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="parcela">Parcela <span class="required">*</span></label>
+            <select id="parcela" required>
+              <option value="">Seleccione una parcela</option>
+            </select>
+            <div class="field-error" id="parcelaError"></div>
+          </div>
+          <div class="form-group">
+            <label>Origen <span class="required">*</span></label>
+            <div class="toggle-group">
+              <input type="radio" name="origen" id="origenManual" value="MANUAL" checked>
+              <label for="origenManual">Manual</label>
+              <input type="radio" name="origen" id="origenCSV" value="CSV">
+              <label for="origenCSV">Sensores (CSV)</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lecturas de Campo</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="humedad">Humedad del Suelo (%) <span class="required">*</span></label>
+            <input type="text" id="humedad" inputmode="decimal" placeholder="Ej: 45.50" required>
+            <div class="field-tooltip">Rango válido: 0% - 100%</div>
+            <div class="field-error" id="humedadError">Valor fuera de rango (0-100)</div>
+          </div>
+          <div class="form-group">
+            <label for="temperatura">Temperatura Ambiente (°C) <span class="required">*</span></label>
+            <input type="text" id="temperatura" inputmode="decimal" placeholder="Ej: 24.50" required>
+            <div class="field-tooltip">Rango válido: -10°C a 50°C</div>
+            <div class="field-error" id="temperaturaError">Valor fuera de rango (-10 a 50)</div>
+          </div>
+          <div class="form-group">
+            <label for="hr">Humedad Relativa (%) <span class="required" style="color:var(--gris-600);"> (opcional)</span></label>
+            <input type="text" id="hr" inputmode="decimal" placeholder="Ej: 65.00">
+            <div class="field-tooltip">Campo opcional, no se almacena en BD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="sensorSection" style="display:none;">
+        <div class="card-title">Datos de Sensores</div>
+        <div id="sensorStatus" style="padding:12px 16px;border-radius:var(--radio-sm);margin-bottom:16px;display:none;"></div>
+        <div id="sensorTableWrapper" style="display:none;">
+          <div class="table-container" style="margin-bottom:16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parcela ID</th>
+                  <th>Humedad (%)</th>
+                  <th>Temperatura (°C)</th>
+                  <th>HR (%)</th>
+                </tr>
+              </thead>
+              <tbody id="tablaSensores"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-primary" id="btnCargarCSV" style="display:none;">📂 Cargar Datos CSV al Sistema</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Datos Climáticos</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="et0">ET₀ de Referencia (mm/día)</label>
+            <input type="text" id="et0" readonly placeholder="ETc = Kc × ET₀ (calculado)">
+            <div class="field-tooltip">Se calcula automáticamente</div>
+          </div>
+        </div>
+        <div class="btn-group" style="justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary" id="btnLimpiar">Limpiar Campos</button>
+          <button type="submit" class="btn btn-primary" id="btnProcesar" disabled>Procesar Lectura</button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Procesando lectura...</div>
+  </div>
+
+  <script src="js/captura.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

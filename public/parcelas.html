@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-supervisor">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parcelas - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="parcelas.html" class="active">Parcelas</a>
+        <a href="configuracion.html">Configuración</a>
+        <a href="auditoria.html">Auditoría</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="usuarios.html">Usuarios</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <h1 class="page-title" style="margin-bottom:0;">Gestión de Parcelas</h1>
+      <button class="btn btn-primary" id="btnNuevaParcela">+ Nueva Parcela</button>
+    </div>
+
+    <div class="card">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Área (m²)</th>
+              <th>Cultivo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaParcelas">
+            <tr><td colspan="5" style="text-align:center;color:var(--gris-400);">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modalParcela">
+    <div class="modal">
+      <h2 id="modalTitle">Nueva Parcela</h2>
+      <form id="parcelaForm" novalidate>
+        <input type="hidden" id="editId" value="">
+        <div class="form-group">
+          <label for="nombreParcela">Nombre <span class="required">*</span></label>
+          <input type="text" id="nombreParcela" placeholder="Nombre de la parcela" required>
+          <div class="field-error" id="nombreParcelaError">El nombre ya existe o no es válido</div>
+        </div>
+        <div class="form-group">
+          <label for="areaParcela">Área (m²) <span class="required">*</span></label>
+          <input type="text" id="areaParcela" inputmode="decimal" placeholder="Ej: 1500.00" required>
+          <div class="field-tooltip">Debe ser un número mayor a 0</div>
+          <div class="field-error" id="areaParcelaError">Área debe ser mayor a 0</div>
+        </div>
+        <div class="form-group">
+          <label for="cultivoParcela">Cultivo <span class="required">*</span></label>
+          <select id="cultivoParcela" required>
+            <option value="">Seleccione un cultivo</option>
+            <option value="Maíz">Maíz</option>
+            <option value="Trigo">Trigo</option>
+            <option value="Soya">Soya</option>
+            <option value="Arroz">Arroz</option>
+            <option value="Algodón">Algodón</option>
+            <option value="Hortalizas">Hortalizas</option>
+            <option value="Frutales">Frutales</option>
+            <option value="Café">Café</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" id="btnCancelarModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnGuardarParcela">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Cargando...</div>
+  </div>
+
+  <script src="js/parcelas.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

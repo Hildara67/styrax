@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-supervisor">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuarios - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="parcelas.html">Parcelas</a>
+        <a href="configuracion.html">Configuración</a>
+        <a href="auditoria.html">Auditoría</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="usuarios.html" class="active">Usuarios</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Gestión de Usuarios</h1>
+
+    <div class="split-section">
+      <div class="card">
+        <div class="card-title">Crear Nuevo Usuario</div>
+        <form id="usuarioForm" novalidate>
+          <div class="form-group">
+            <label for="nuevoNombre">Nombre <span class="required">*</span></label>
+            <input type="text" id="nuevoNombre" placeholder="Nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="nuevoRol">Rol <span class="required">*</span></label>
+            <select id="nuevoRol" required>
+              <option value="">Seleccione un rol</option>
+              <option value="OPERADOR">OPERADOR</option>
+              <option value="SUPERVISOR">SUPERVISOR</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nuevoPassword">Contraseña <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="nuevoPassword" placeholder="Mínimo 8 caracteres" required minlength="8">
+              <button type="button" class="toggle-password" id="toggleNewPassword" tabindex="-1">👁</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="confirmarPassword">Confirmar contraseña <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" id="confirmarPassword" placeholder="Repite la contraseña" required minlength="8">
+              <button type="button" class="toggle-password" id="toggleConfirmPassword" tabindex="-1">👁</button>
+            </div>
+            <div class="field-error" id="passwordError">Las contraseñas no coinciden</div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btnCrearUsuario">Crear</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Usuarios del Sistema</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Última Sesión</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+              <tr><td colspan="5" style="text-align:center;color:var(--gris-400);">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Cargando...</div>
+  </div>
+
+  <script src="js/usuarios.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

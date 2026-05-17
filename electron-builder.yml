@@ -1,0 +1,14 @@
+appId: com.riego.sistema
+productName: Sistema Riego
+win:
+  target: nsis
+  icon: public/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+files:
+  - public/**/*
+  - src/**/*
+  - datos/**/*
+  - .env.example
+  - package.json

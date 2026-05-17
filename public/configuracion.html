@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-supervisor">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="parcelas.html">Parcelas</a>
+        <a href="configuracion.html" class="active">Configuración</a>
+        <a href="auditoria.html">Auditoría</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="usuarios.html">Usuarios</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Configuración de Sistema</h1>
+
+    <div class="split-section">
+      <div class="card">
+        <div class="card-title">Configuración de Umbrales</div>
+        <form id="umbralesForm">
+          <div class="form-group">
+            <label for="cfgParcela">Parcela <span class="required">*</span></label>
+            <select id="cfgParcela" required>
+              <option value="">Seleccione una parcela</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="umbralMin">Mínimo (%) <span class="required">*</span></label>
+            <input type="text" id="umbralMin" inputmode="decimal" placeholder="Ej: 30" required>
+            <div class="field-tooltip">Rango: 0% - 100%</div>
+            <div class="field-error" id="umbralMinError">Debe estar entre 0 y 100</div>
+          </div>
+          <div class="form-group">
+            <label for="umbralMax">Máximo (%) <span class="required">*</span></label>
+            <input type="text" id="umbralMax" inputmode="decimal" placeholder="Ej: 80" required>
+            <div class="field-tooltip">Rango: 0% - 100%</div>
+            <div class="field-error" id="umbralMaxError">Debe estar entre 0 y 100</div>
+          </div>
+          <div class="form-group">
+            <label for="kcActual">Kc Actual <span class="required">*</span></label>
+            <input type="text" id="kcActual" inputmode="decimal" placeholder="Ej: 1.00" required>
+            <div class="field-tooltip">Rango: 0.1 - 2.0</div>
+            <div class="field-error" id="kcActualError">Kc debe estar entre 0.1 y 2.0</div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btnGuardarUmbrales">Guardar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Configuración de API</div>
+        <form id="apiForm">
+          <div class="form-group">
+            <label>URL</label>
+            <input type="text" value="https://power.larc.nasa.gov/api/temporal/daily/point" readonly>
+          </div>
+          <div class="form-group">
+            <label>Documentación</label>
+            <input type="text" value="https://power.larc.nasa.gov/docs/services/api/" readonly>
+          </div>
+          <div class="form-group">
+            <label>Token</label>
+            <input type="password" placeholder="Sin token requerido" readonly>
+          </div>
+          <div class="form-group">
+            <label>Timeout</label>
+            <input type="text" value="5 Segundos (Fijo)" readonly>
+          </div>
+          <button type="button" class="btn btn-secondary" id="btnProbarAPI">Probar conexión</button>
+          <div style="margin-top:12px;font-size:14px;">
+            Estado: <span id="estadoAPI">🔴 Desconectado</span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Mantenimiento</div>
+      <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+        <div>
+          <p style="font-size:14px;color:var(--gris-600);">Base de datos: <strong>MariaDB</strong></p>
+          <p style="font-size:14px;color:var(--gris-600);">Estado: <span id="estadoBD">🔴 Desconectado</span></p>
+        </div>
+        <button class="btn btn-primary" id="btnGenerarRespaldo">Generar respaldo</button>
+        <span style="font-size:13px;color:var(--gris-600);">Genera un respaldo completo de la base de datos en formato JSON.</span>
+      </div>
+    </div>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Cargando...</div>
+  </div>
+
+  <script src="js/configuracion.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-operador">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recomendaciones - Sistema Riego</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><img src="logosolo.png" class="header-logo-icon" alt="Sistema Riego" width="45" height="45"><img src="nombresolo.png" class="header-name-icon" alt="nombre" height="40"></div>
+      <nav class="main-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="captura.html">Capturar</a>
+        <a href="recomendaciones.html" class="active">Recomendaciones</a>
+        <a href="historial.html">Historial</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="header-user">
+        <span id="userName"></span>
+        <span class="rol-badge" id="userRol"></span>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnCerrarSesion">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Panel de Recomendaciones Activas</h1>
+
+    <div class="recomendaciones-grid" id="recomendacionesGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--gris-400);padding:40px;">Cargando recomendaciones...</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;">Historial de Recomendaciones</div>
+        <button class="btn btn-secondary btn-sm" id="btnExportarCSV">📥 Exportar CSV</button>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha/Hora</th>
+              <th>Parcela</th>
+              <th>Acción</th>
+              <th>Vol (L)</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="historialRecomendaciones">
+            <tr><td colspan="5" style="text-align:center;color:var(--gris-400);">Sin datos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Cargando recomendaciones...</div>
+  </div>
+
+  <script src="js/recomendaciones.js"></script>
+  <script src="js/inactividad.js"></script>
+</body>
+</html>
