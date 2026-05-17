@@ -8,7 +8,8 @@
     "dev": "nodemon --exec electron .",
     "build": "electron-builder --win",
     "docs": "jsdoc src -d docs/jsdoc",
-    "demo": "node server.js"
+    "demo": "node server.js",
+    "start:web": "node server.js"
   },
   "dependencies": {
     "axios": "^1.6.0",
