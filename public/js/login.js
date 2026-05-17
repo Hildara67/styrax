@@ -14,10 +14,8 @@ setTimeout(() => {
     loginMain.style.display = 'flex';
     requestAnimationFrame(() => {
       loginMain.classList.add('show');
-      if (!window.api) {
+      if (window.innerWidth > 768 && !window.api) {
         usuarioInput.focus();
-      } else {
-        setTimeout(() => usuarioInput.focus(), 100);
       }
     });
   }, 700);

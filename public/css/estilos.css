@@ -392,9 +392,15 @@ h1, h2, h3, h4, h5 {
     left: auto;
     bottom: auto;
     right: auto;
-    padding: 32px 24px;
-    min-height: 280px;
+    padding: 48px 24px 24px;
+    min-height: 240px;
     width: 100%;
+  }
+  .login-home {
+    top: 8px;
+    left: 8px;
+    font-size: 12px;
+    padding: 6px 10px;
   }
   .login-form-panel {
     position: relative;
@@ -541,12 +547,37 @@ h1, h2, h3, h4, h5 {
 
 .btn-home {
   text-decoration: none;
-  font-size: 20px;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  line-height: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radio-sm);
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
-.btn-home:hover { opacity: 1; }
+.btn-home:hover {
+  background: #fff;
+  color: var(--text-primary);
+  border-color: var(--gris-medio);
+}
+
+.login-home {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.login-home:hover {
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
 
 .main-container {
   padding: 28px 32px;
@@ -1479,6 +1510,8 @@ input[type="number"] {
   }
 
   .btn-home {
-    font-size: 18px;
+    font-size: 13px;
+    padding: 6px 10px;
   }
 }
+

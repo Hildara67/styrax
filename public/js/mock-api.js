@@ -207,8 +207,8 @@
       configs[data.parcelaId] = { ...configs[data.parcelaId], ...data };
       return { success: true };
     },
-    probarAPI: async () => ({ exito: false, mensaje: 'API no disponible en demo web' }),
-    probarBD: async () => ({ exito: true, mensaje: 'Mock DB conectada' }),
+    probarAPI: async () => ({ conectado: false }),
+    probarBD: async () => ({ conectado: true }),
 
     listarUsuarios: async () => usuarios.map(u => ({ id: u.id, nombre: u.nombre, rol: u.rol, activo: true })),
     crearUsuario: async (data) => {
@@ -219,8 +219,37 @@
     desactivarUsuario: async () => ({ success: true }),
     listarOperadores: async () => usuarios.filter(u => u.rol === 'OPERADOR'),
 
-    leerCSV: async () => ({ success: false, lecturas: [] }),
-    importarAutoCSV: async () => ({ insertados: {} }),
+    leerCSV: async () => {
+      const datos = parcelas.map(p => {
+        const humBase = p.id === 1 ? 68 : p.id === 2 ? 82 : 33;
+        return {
+          parcelaId: p.id, humedadSuelo: humBase + rand(-5, 5),
+          temperaturaAmbiente: p.id === 1 ? 28 : p.id === 2 ? 27 : 29,
+          humedadRelativa: p.id === 1 ? 45 : p.id === 2 ? 52 : 38,
+          timestamp: ahora()
+        };
+      });
+      return { success: true, lecturas: datos };
+    },
+    importarAutoCSV: async () => {
+      const res = await api.leerCSV();
+      const insertados = {};
+      if (res.success) {
+        for (const l of res.lecturas) {
+          const id = lecturas.length + 1;
+          const p = parcelas.find(x => x.id === l.parcelaId);
+          lecturas.push({
+            id, parcelaId: l.parcelaId, humedadSuelo: l.humedadSuelo,
+            temperaturaAmbiente: l.temperaturaAmbiente, humedadRelativa: l.humedadRelativa || null,
+            origen: 'CSV', esValida: true, usuarioRegistro: 2,
+            timestampRegistro: l.timestamp || ahora(), nombreParcela: p ? p.nombre : ''
+          });
+          insertados[l.parcelaId] = (insertados[l.parcelaId] || 0) + 1;
+        }
+        persistir();
+      }
+      return { success: true, insertados };
+    },
 
     consultarET0: async () => {
       const eto = ETO_BASE[etoIdx % ETO_BASE.length];
