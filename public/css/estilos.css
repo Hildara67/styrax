@@ -155,7 +155,7 @@ h1, h2, h3, h4, h5 {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px;
+  padding: 24px;
 }
 
 .brand-inner {
@@ -165,7 +165,7 @@ h1, h2, h3, h4, h5 {
 
 .brand-logo {
   display: block;
-  margin: 0 auto 20px;
+  margin: 0 auto 8px;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.25));
 }
 
@@ -196,7 +196,7 @@ h1, h2, h3, h4, h5 {
 .brand-divider {
   width: 60px;
   height: 3px;
-  margin: 0 auto 28px;
+  margin: 0 auto;
   background: linear-gradient(90deg, #66bb6a, #a5d6a7);
   border-radius: 2px;
 }
