@@ -7,31 +7,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; color: #0F251E; background: #F2ECE0; line-height: 1.6; }
+    body { font-family: 'Inter', -apple-system, sans-serif; color: #0F251E; background: #F2ECE0; line-height: 1.6; overflow-x: hidden; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
-    nav .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    nav .logo img { height: 36px; }
+    html { scroll-behavior: smooth; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .reveal { animation: fadeUp 0.7s ease both; }
+    .reveal-d1 { animation-delay: 0.1s; }
+    .reveal-d2 { animation-delay: 0.2s; }
+    .reveal-d3 { animation-delay: 0.3s; }
+    .reveal-d4 { animation-delay: 0.4s; }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; max-width: 1200px; margin: 0 auto; }
+    nav .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    nav .logo .logo-icon { height: 48px; transition: transform 0.3s; }
+    nav .logo .logo-icon:hover { transform: scale(1.08); }
+    nav .logo .logo-text { height: 34px; }
     nav .nav-btn { padding: 10px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.2s; }
     nav .nav-btn-primary { background: #687648; color: #fff; }
     nav .nav-btn-primary:hover { background: #0F251E; }
 
-    .hero { padding: 100px 24px 120px; text-align: center; background: linear-gradient(180deg, #AEC5D1 0%, #F2ECE0 40%, #A5B393 100%); position: relative; overflow: hidden; }
+    .hero { padding: 80px 24px 100px; text-align: center; background: linear-gradient(180deg, #AEC5D1 0%, #F2ECE0 40%, #A5B393 100%); position: relative; overflow: hidden; min-height: 90vh; display: flex; align-items: center; justify-content: center; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, rgba(174,197,209,0.3) 0%, transparent 60%); }
     .hero .container { position: relative; }
-    .hero .hero-logo { max-width: 240px; margin: 0 auto 16px; display: block; }
-    .hero .hero-sub { max-width: 280px; margin: 0 auto 16px; display: block; }
-    .hero h1 { font-size: clamp(38px, 6vw, 64px); font-weight: 900; line-height: 1.1; margin-bottom: 12px; color: #0F251E; letter-spacing: -1px; }
-    .hero .tagline { font-size: clamp(18px, 2.5vw, 24px); font-weight: 700; color: #1E3B47; margin-bottom: 10px; }
-    .hero .subtagline { font-size: 15px; color: #4a6a7a; max-width: 600px; margin: 0 auto 32px; font-weight: 400; }
-    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero .hero-icon { max-width: 200px; margin: 0 auto 10px; display: block; animation: float 5s ease-in-out infinite; }
+    .hero .hero-sub { max-width: 420px; margin: 0 auto 20px; display: block; animation: fadeIn 1s ease 0.3s both; }
+    .hero .tagline { font-size: clamp(18px, 2.5vw, 24px); font-weight: 700; color: #1E3B47; margin-bottom: 10px; animation: fadeUp 0.7s ease 0.5s both; }
+    .hero .subtagline { font-size: 15px; color: #4a6a7a; max-width: 600px; margin: 0 auto 36px; font-weight: 400; animation: fadeUp 0.7s ease 0.6s both; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.7s ease 0.7s both; }
     .btn { padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-primary { background: #687648; color: #fff; box-shadow: 0 4px 16px rgba(104,118,72,0.3); }
     .btn-primary:hover { background: #0F251E; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(104,118,72,0.35); }
     .btn-secondary { background: #fff; color: #1E3B47; border: 2px solid #AEC5D1; }
     .btn-secondary:hover { border-color: #687648; transform: translateY(-2px); }
 
-    section { padding: 80px 24px; }
+    section { padding: 100px 24px; }
     .section-label { display: inline-block; text-transform: uppercase; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #687648; margin-bottom: 12px; }
     .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 16px; color: #0F251E; letter-spacing: -0.5px; }
     .section-sub { font-size: 18px; color: #4a6a7a; max-width: 600px; margin-bottom: 48px; }
@@ -43,15 +56,15 @@
     .etym-daggers { color: #A5B393; font-weight: 300; font-size: clamp(24px, 4vw, 36px); margin-bottom: 40px; letter-spacing: 8px; }
     .etym-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
     .etym-block { padding: 32px; border-radius: 14px; background: #fff; border: 1px solid #D4E0E8; text-align: center; position: relative; transition: all 0.25s; }
-    .etym-block:hover { border-color: #A5B393; box-shadow: 0 8px 32px rgba(104,118,72,0.06); }
+    .etym-block:hover { border-color: #A5B393; box-shadow: 0 8px 32px rgba(104,118,72,0.06); transform: translateY(-4px); }
     .etym-block .lang { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #A5B393; letter-spacing: 2px; margin-bottom: 8px; }
     .etym-block .origin { font-size: 32px; font-weight: 800; color: #1E3B47; margin-bottom: 6px; letter-spacing: 1px; }
     .etym-block .origin-word { font-size: 14px; color: #9E774E; font-weight: 600; font-style: italic; margin-bottom: 8px; }
     .etym-block .meaning { font-size: 14px; color: #4a6a7a; line-height: 1.6; }
     .etym-block .meaning strong { color: #0F251E; }
-    .etym-plus { display: flex; align-items: center; justify-content: center; font-size: 28px; color: #A5B393; font-weight: 300; }
     .etym-line { width: 50px; height: 3px; margin: 0 auto 32px; background: linear-gradient(90deg, #AEC5D1, #687648); border-radius: 2px; }
-    .etym-phrase { font-size: 20px; color: #0F251E; font-weight: 600; padding: 28px 32px; background: #fff; border-radius: 14px; border: 1px solid #A5B393; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    .etym-phrase { font-size: 20px; color: #0F251E; font-weight: 600; padding: 28px 32px; background: #fff; border-radius: 14px; border: 1px solid #A5B393; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: all 0.3s; }
+    .etym-phrase:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
     .etym-phrase .phrase { font-size: 22px; font-weight: 700; color: #0F251E; margin-bottom: 6px; }
     .etym-phrase .sub-phrase { font-size: 14px; color: #687648; font-weight: 500; }
 
@@ -67,14 +80,16 @@
     .benefits .section-title { color: #fff; }
     .benefits .section-sub { color: rgba(255,255,255,0.6); }
     .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-    .benefit-card { padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+    .benefit-card { padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); transition: all 0.25s; }
+    .benefit-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); }
     .benefit-card .number { font-size: 36px; font-weight: 900; color: #A5B393; margin-bottom: 8px; }
     .benefit-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
     .benefit-card p { font-size: 14px; color: rgba(255,255,255,0.6); }
 
     .tech { text-align: center; background: #fff; }
     .tech-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-    .tech-item { padding: 20px 28px; background: #F2ECE0; border-radius: 10px; border: 1px solid #D4E0E8; font-weight: 600; font-size: 15px; color: #0F251E; }
+    .tech-item { padding: 20px 28px; background: #F2ECE0; border-radius: 10px; border: 1px solid #D4E0E8; font-weight: 600; font-size: 15px; color: #0F251E; transition: all 0.2s; }
+    .tech-item:hover { border-color: #687648; transform: translateY(-2px); }
 
     .demo-cta { text-align: center; background: linear-gradient(180deg, #AEC5D1 0%, #687648 100%); color: #fff; padding: 100px 24px; }
     .demo-cta h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 16px; }
@@ -89,14 +104,18 @@
     footer strong { color: #0F251E; }
 
     @media (max-width: 768px) {
-      .hero { padding: 60px 16px 80px; }
+      .hero { padding: 60px 16px 80px; min-height: auto; }
+      .hero .hero-icon { max-width: 140px; }
+      .hero .hero-sub { max-width: 280px; }
       section { padding: 60px 16px; }
       .etymology { padding: 60px 16px; }
       .etym-blocks { grid-template-columns: 1fr; }
-      .etym-plus { padding: 8px 0; }
-      nav .logo img:last-child { display: none; }
+      nav { padding: 12px 16px; }
+      nav .logo .logo-text { height: 26px; }
+      nav .logo .logo-icon { height: 40px; }
       .features-grid { grid-template-columns: 1fr; }
       .benefits-grid { grid-template-columns: 1fr; }
+      .demo-cta { padding: 60px 16px; }
     }
   </style>
 </head>
@@ -104,14 +123,15 @@
 
 <nav>
   <a href="#" class="logo">
-    <img src="logosolo.png" alt="STYRAX">
-    <img src="nombresolo.png" alt="STYRAX" style="height:28px;">
+    <img src="logosolo.png" alt="STYRAX" class="logo-icon">
+    <img src="nombresolo.png" alt="STYRAX" class="logo-text">
   </a>
   <a href="public/index.html" class="nav-btn nav-btn-primary">Demo</a>
 </nav>
 
 <section class="hero">
   <div class="container">
+    <img src="logosolo.png" alt="STYRAX" class="hero-icon">
     <img src="nombresolo.png" alt="STYRAX" class="hero-sub">
     <p class="tagline">El punto exacto donde controlas cada gota</p>
     <p class="subtagline">Sistema Inteligente de Control de Riego basado en la metodología FAO-56, con datos climáticos en tiempo real y automatización de decisiones.</p>
@@ -124,63 +144,63 @@
 
 <section class="etymology" id="etimologia">
   <div class="container">
-    <div class="etym-badge">Origen del Nombre</div>
-    <div class="etym-name">STYRAX</div>
-    <div class="etym-daggers">&#8224; &#8224; &#8224;</div>
+    <div class="etym-badge reveal">Origen del Nombre</div>
+    <div class="etym-name reveal reveal-d1">STYRAX</div>
+    <div class="etym-daggers reveal reveal-d2">&#8224; &#8224; &#8224;</div>
     <div class="etym-blocks">
-      <div class="etym-block">
+      <div class="etym-block reveal reveal-d3">
         <div class="lang">Latín</div>
         <div class="origin">STILLA</div>
         <div class="origin-word">"gota"</div>
         <div class="meaning">No el agua en su conjunto, sino la <strong>gota como unidad precisa de medida</strong>. Cada gota cuenta, cada gota se controla.</div>
       </div>
-      <div class="etym-block">
+      <div class="etym-block reveal reveal-d4">
         <div class="lang">Griego</div>
         <div class="origin">AXIS</div>
         <div class="origin-word">"eje"</div>
         <div class="meaning">El <strong>centro de precisión</strong> alrededor del cual todo gira. El punto desde el cual se gobierna el sistema.</div>
       </div>
     </div>
-    <div class="etym-line"></div>
-    <div class="etym-phrase">
+    <div class="etym-line reveal"></div>
+    <div class="etym-phrase reveal">
       <div class="phrase">Stilla + Axis = STYRAX</div>
-      <div class="sub-phrase">El eje de la gota &mdash; el punto exacto donde controlas cada gota</div>
+      <div class="sub-phrase">El eje de la gota — el punto exacto donde controlas cada gota</div>
     </div>
   </div>
 </section>
 
 <section id="features">
   <div class="container">
-    <div class="section-label">Características</div>
-    <h2 class="section-title">Todo lo que necesitas para gestionar tu riego</h2>
-    <p class="section-sub">Un sistema completo diseñado para optimizar el agua en la agricultura.</p>
+    <div class="section-label reveal">Características</div>
+    <h2 class="section-title reveal reveal-d1">Todo lo que necesitas para gestionar tu riego</h2>
+    <p class="section-sub reveal reveal-d2">Un sistema completo diseñado para optimizar el agua en la agricultura.</p>
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">🌱</div>
         <h3>Monitoreo en Tiempo Real</h3>
         <p>Visualiza la humedad del suelo, temperatura y humedad relativa de todas tus parcelas en un solo panel.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">🌤</div>
         <h3>Datos Climáticos Reales</h3>
         <p>Integración con API NASA POWER para obtener datos meteorológicos precisos y calcular la evapotranspiración.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">🧠</div>
         <h3>Recomendaciones Automáticas</h3>
         <p>Basadas en la metodología FAO-56, genera recomendaciones precisas de cuándo y cuánto regar.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">📊</div>
         <h3>Reportes y Estadísticas</h3>
         <p>Genera reportes detallados, exporta a CSV y visualiza el historial completo de lecturas y acciones.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">🔔</div>
         <h3>Alertas y Notificaciones</h3>
         <p>Recibe alertas cuando los niveles de humedad están fuera de los umbrales óptimos configurados.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card reveal">
         <div class="feature-icon" style="background:#D4E0E8;">👥</div>
         <h3>Multi-Usuario y Roles</h3>
         <p>Sistema con roles de SUPERVISOR y OPERADOR, cada uno con permisos y vistas personalizadas.</p>
@@ -191,54 +211,38 @@
 
 <section class="benefits">
   <div class="container">
-    <div class="section-label">Beneficios</div>
-    <h2 class="section-title">Resultados comprobados en el campo</h2>
-    <p class="section-sub">Diseñado para productores agrícolas que buscan eficiencia y sostenibilidad.</p>
+    <div class="section-label reveal">Beneficios</div>
+    <h2 class="section-title reveal reveal-d1">Resultados comprobados en el campo</h2>
+    <p class="section-sub reveal reveal-d2">Diseñado para productores agrícolas que buscan eficiencia y sostenibilidad.</p>
     <div class="benefits-grid">
-      <div class="benefit-card">
-        <div class="number">30%</div>
-        <h4>Ahorro de Agua</h4>
-        <p>Optimización del riego basada en datos reales y umbrales inteligentes.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="number">FAO-56</div>
-        <h4>Metodología Científica</h4>
-        <p>Basado en el estándar internacional de la FAO para el cálculo de necesidades hídricas.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="number">24/7</div>
-        <h4>Monitoreo Continuo</h4>
-        <p>Supervisión automatizada con generación de recomendaciones cada hora.</p>
-      </div>
-      <div class="benefit-card">
-        <div class="number">100%</div>
-        <h4>Software Libre</h4>
-        <p>Código abierto, sin costos de licencia, personalizable a tus necesidades.</p>
-      </div>
+      <div class="benefit-card reveal"><div class="number">30%</div><h4>Ahorro de Agua</h4><p>Optimización del riego basada en datos reales y umbrales inteligentes.</p></div>
+      <div class="benefit-card reveal"><div class="number">FAO-56</div><h4>Metodología Científica</h4><p>Basado en el estándar internacional de la FAO para el cálculo de necesidades hídricas.</p></div>
+      <div class="benefit-card reveal"><div class="number">24/7</div><h4>Monitoreo Continuo</h4><p>Supervisión automatizada con generación de recomendaciones cada hora.</p></div>
+      <div class="benefit-card reveal"><div class="number">100%</div><h4>Software Libre</h4><p>Código abierto, sin costos de licencia, personalizable a tus necesidades.</p></div>
     </div>
   </div>
 </section>
 
 <section class="tech">
   <div class="container">
-    <div class="section-label">Stack Tecnológico</div>
-    <h2 class="section-title">Tecnologías utilizadas</h2>
+    <div class="section-label reveal">Stack Tecnológico</div>
+    <h2 class="section-title reveal reveal-d1">Tecnologías utilizadas</h2>
     <div class="tech-grid">
-      <div class="tech-item">⚡ Electron.js</div>
-      <div class="tech-item">🟢 Node.js</div>
-      <div class="tech-item">🗄 MariaDB</div>
-      <div class="tech-item">🌐 NASA POWER API</div>
-      <div class="tech-item">📄 HTML5 / CSS3 / JS</div>
+      <div class="tech-item reveal">⚡ Electron.js</div>
+      <div class="tech-item reveal reveal-d1">🟢 Node.js</div>
+      <div class="tech-item reveal reveal-d2">🗄 MariaDB</div>
+      <div class="tech-item reveal reveal-d3">🌐 NASA POWER API</div>
+      <div class="tech-item reveal reveal-d4">📄 HTML5 / CSS3 / JS</div>
     </div>
   </div>
 </section>
 
 <section class="demo-cta">
   <div class="container">
-    <h2>Listo para probarlo</h2>
-    <p>Accede a la demo funcional con datos simulados. Sin instalación, sin registro.</p>
-    <a href="public/index.html" class="btn btn-primary">Probar Demo en Vivo</a>
-    <div class="credentials">Demo: <strong>admin</strong> / <strong>admin123</strong> (Supervisor) | <strong>operador1</strong> / <strong>operador123</strong> (Operador)</div>
+    <h2 class="reveal">Listo para probarlo</h2>
+    <p class="reveal reveal-d1">Accede a la demo funcional con datos simulados. Sin instalación, sin registro.</p>
+    <a href="public/index.html" class="btn btn-primary reveal reveal-d2">Probar Demo en Vivo</a>
+    <div class="credentials reveal reveal-d3">Demo: <strong>admin</strong> / <strong>admin123</strong> (Supervisor) | <strong>operador1</strong> / <strong>operador123</strong> (Operador)</div>
   </div>
 </section>
 
