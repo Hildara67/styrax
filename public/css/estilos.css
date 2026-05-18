@@ -361,7 +361,6 @@ h1, h2, h3, h4, h5 {
   line-height: 2;
 }
 .credential-hint code {
-  background: #e9e5db;
   padding: 1px 6px;
   border-radius: 3px;
   font-size: 13px;
