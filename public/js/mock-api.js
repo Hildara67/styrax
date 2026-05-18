@@ -74,8 +74,21 @@
 
     listarParcelas: async () => [...parcelas],
     crearParcela: async (data) => {
-      const id = parcelas.length + 1;
+      const ids = parcelas.map(p => p.id);
+      const id = ids.length > 0 ? Math.max(...ids) + 1 : 1;
       parcelas.push({ id, nombre: data.nombre, areaM2: Number(data.areaM2), cultivo: data.cultivo });
+      configs[id] = { id, parcelaId: id, umbral_min: 40, umbral_max: 80, kc_actual: 1.0 };
+      const humBase = 50 + Math.round(Math.random() * 30);
+      const lecturaId = lecturas.length + 1;
+      lecturas.push({
+        id: lecturaId, parcelaId: id, humedadSuelo: humBase,
+        temperaturaAmbiente: 25 + Math.round(Math.random() * 8),
+        humedadRelativa: 40 + Math.round(Math.random() * 30),
+        origen: 'MANUAL', esValida: true, usuarioRegistro: 2,
+        timestampRegistro: ahora(), nombreParcela: data.nombre
+      });
+      persistir();
+      await api.generarRecomendacion({ parcelaId: id, humedad: humBase, config: { areaM2: Number(data.areaM2) }, usuarioRegistro: 2 });
       return { success: true, id };
     },
     actualizarParcela: async (id, data) => {
@@ -101,6 +114,10 @@
         timestampRegistro: ahora(), nombreParcela: p ? p.nombre : ''
       });
       persistir();
+      for (const r of recomendaciones) {
+        if (r.parcelaId === data.parcelaId && r.estado === 'PENDIENTE') r.estado = 'RECHAZADA';
+      }
+      await api.generarRecomendacion({ parcelaId: data.parcelaId, humedad: data.humedadSuelo, config: { areaM2: p ? p.areaM2 : 100 }, usuarioRegistro: data.usuarioRegistro });
       return { success: true, id };
     },
     ultimasLecturas: async () => lecturas,
@@ -165,10 +182,11 @@
       return { success: true, id, recomendacion: rec };
     },
     generarRecomendacionesTodas: async () => {
+      for (const r of recomendaciones) {
+        if (r.estado === 'PENDIENTE') r.estado = 'RECHAZADA';
+      }
       const generadas = [];
-      const idsConPendiente = new Set(recomendaciones.filter(r => r.estado === 'PENDIENTE').map(r => r.parcelaId));
       for (const p of parcelas) {
-        if (idsConPendiente.has(p.id)) continue;
         const lect = lecturas.find(l => l.parcelaId === p.id);
         if (!lect) continue;
         const eto = ETO_BASE[etoIdx % ETO_BASE.length];
@@ -191,7 +209,7 @@
         });
         generadas.push({ id, parcelaId: p.id, nombre: p.nombre, accion, urgencia: urg, volumen: vol });
       }
-      if (generadas.length > 0) persistir();
+      persistir();
       return { success: true, generadas };
     },
     enviarValidacion: async (id, usuario) => {
@@ -215,11 +233,6 @@
     rechazarRecomendacion: async (id) => {
       const r = recomendaciones.find(x => x.id === id);
       if (r) { r.estado = 'RECHAZADA'; persistir(); }
-      return { success: true };
-    },
-    rechazarTodasPendientes: async () => {
-      recomendaciones.filter(r => r.estado === 'PENDIENTE').forEach(r => { r.estado = 'RECHAZADA'; });
-      persistir();
       return { success: true };
     },
     estadisticasRecomendaciones: async () => {

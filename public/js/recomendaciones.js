@@ -169,19 +169,6 @@ document.getElementById('btnExportarCSV').addEventListener('click', async functi
   }
 });
 
-document.getElementById('btnGenerarRecomendaciones').addEventListener('click', async function() {
-  mostrarCarga('Regenerando recomendaciones...');
-  try {
-    await window.api.rechazarTodasPendientes();
-    await autoGenerarRecomendaciones();
-    await cargarRecomendaciones();
-  } catch (err) {
-    mostrarToast('Error: ' + err.message, 'error');
-  } finally {
-    ocultarCarga();
-  }
-});
-
 async function autoGenerarRecomendaciones() {
   mostrarCarga('Generando recomendaciones...');
   try {
