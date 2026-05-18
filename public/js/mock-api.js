@@ -98,12 +98,13 @@
     },
     actualizarParcela: async (id, data) => {
       const p = parcelas.find(x => x.id === id);
-      if (p) { p.nombre = data.nombre; p.areaM2 = Number(data.areaM2); p.cultivo = data.cultivo; }
+      if (p) { p.nombre = data.nombre; p.areaM2 = Number(data.areaM2); p.cultivo = data.cultivo; persistir(); }
       return { success: true };
     },
     eliminarParcela: async (id) => {
       const idx = parcelas.findIndex(x => x.id === id);
       if (idx >= 0) parcelas.splice(idx, 1);
+      persistir();
       return { success: true };
     },
     contarParcelas: async () => parcelas.length,
@@ -123,16 +124,14 @@
         timestampRegistro: ahora(), nombreParcela: p ? p.nombre : ''
       });
       persistir();
-      for (const r of recomendaciones) {
-        if (r.parcelaId === data.parcelaId && r.estado === 'PENDIENTE') r.estado = 'RECHAZADA';
-      }
-      await api.generarRecomendacion({ parcelaId: data.parcelaId, humedad: data.humedadSuelo, config: { areaM2: p ? p.areaM2 : 100 }, usuarioRegistro: data.usuarioRegistro });
       return { success: true, id };
     },
     ultimasLecturas: async () => lecturas,
     historialLecturas: async (filtros) => {
       let r = [...lecturas];
       if (filtros?.parcelaId) r = r.filter(l => l.parcelaId === Number(filtros.parcelaId));
+      if (filtros?.desde) r = r.filter(l => l.timestampRegistro >= filtros.desde);
+      if (filtros?.hasta) r = r.filter(l => l.timestampRegistro <= filtros.hasta + ' 23:59:59');
       return r.sort((a, b) => (b.id || 0) - (a.id || 0));
     },
     indicadoresLecturas: async () => {
@@ -180,11 +179,13 @@
       const urg = deficit > 20 ? 'CRÍTICO' : deficit > 10 ? 'ALTO' : deficit > 5 ? 'MEDIO' : 'BAJO';
       const p = parcelas.find(x => x.id === data.parcelaId);
       const id = nextRecId++;
+      const u = usuariosDB.find(x => x.id === data.usuarioRegistro);
       const rec = {
         id, parcelaId: data.parcelaId, nombreParcela: p ? p.nombre : '', cultivo: p ? p.cultivo : '',
         volumenSugeridoL: vol, accion, estado: 'PENDIENTE', urgencia: urg,
         usuarioAprobador: null, timestamp_generacion: ahora(),
-        nombre_parcela: p ? p.nombre : '', volumen_sugerido_L: vol
+        nombre_parcela: p ? p.nombre : '', volumen_sugerido_L: vol,
+        operador: u ? u.nombre : '---', operador_rol: u ? u.rol : '---'
       };
       recomendaciones.push(rec);
       persistir();
@@ -222,11 +223,13 @@
         const vol = Math.round(deficit * parcela.areaM2 * 0.07);
         const urg = deficit > 20 ? 'CRÍTICO' : deficit > 10 ? 'ALTO' : deficit > 5 ? 'MEDIO' : 'BAJO';
         const id = nextRecId++;
+        const u = usuariosDB.find(x => x.id === usuarioRegistro);
         recomendaciones.push({
           id, parcelaId: parcela.id, nombreParcela: parcela.nombre, cultivo: parcela.cultivo,
           volumenSugeridoL: vol, accion, estado: 'PENDIENTE', urgencia: urg,
           usuarioAprobador: null, timestamp_generacion: ahora(),
-          nombre_parcela: parcela.nombre, volumen_sugerido_L: vol
+          nombre_parcela: parcela.nombre, volumen_sugerido_L: vol,
+          operador: u ? u.nombre : '---', operador_rol: u ? u.rol : '---'
         });
         generadas.push({ id, parcelaId: parcela.id, nombre: parcela.nombre, accion, urgencia: urg, volumen: vol });
       }
@@ -288,6 +291,7 @@
     obtenerConfig: async (parcelaId) => configs[parcelaId] || null,
     guardarConfig: async (data) => {
       configs[data.parcelaId] = { ...configs[data.parcelaId], ...data };
+      persistir();
       return { success: true };
     },
     probarAPI: async () => ({ conectado: true }),

@@ -44,7 +44,7 @@ async function cargarPendientes() {
         const accionBadge = r.accion === 'APLICAR_RIEGO' ? 'badge-rojo' : r.accion === 'DETENER_RIEGO' ? 'badge-naranja' : 'badge-verde';
         return `<tr>
           <td>${r.id}</td>
-          <td>${r.timestampGeneracion || '---'}</td>
+          <td>${r.timestamp_generacion || '---'}</td>
           <td>${r.nombreParcela}</td>
           <td><span class="badge ${accionBadge}">${r.accion}</span></td>
           <td>${r.volumenSugeridoL.toFixed(2)}</td>
