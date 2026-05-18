@@ -185,33 +185,45 @@
       persistir();
       return { success: true, id, recomendacion: rec };
     },
-    generarRecomendacionesTodas: async () => {
-      for (const r of recomendaciones) {
-        if (r.estado === 'PENDIENTE') r.estado = 'RECHAZADA';
-      }
+    generarRecomendacionesTodas: async (usuarioRegistro) => {
       const generadas = [];
-      for (const p of parcelas) {
-        const lect = ultimaLecturaParcela(p.id);
+      const pendientes = recomendaciones.filter(r => r.estado === 'PENDIENTE');
+      const pendientesPorParcela = {};
+      for (const p of pendientes) {
+        if (!pendientesPorParcela[p.parcelaId]) pendientesPorParcela[p.parcelaId] = [];
+        pendientesPorParcela[p.parcelaId].push(p);
+      }
+      for (const parcela of parcelas) {
+        const lect = ultimaLecturaParcela(parcela.id);
         if (!lect) continue;
         const eto = ETO_BASE[etoIdx % ETO_BASE.length];
-        const cfg = configs[p.id];
+        const cfg = configs[parcela.id];
         const umbralMin = cfg ? cfg.umbral_min : 40;
-        const balance = lect.humedadSuelo - ((cfg ? cfg.kc_actual : 1.0) * eto);
+        const umbralMax = cfg ? cfg.umbral_max : 80;
+        const kc = cfg ? cfg.kc_actual : 1.0;
+        const etc = kc * eto;
+        const balance = lect.humedadSuelo - etc;
         let accion = 'MANTENER';
         if (balance < umbralMin) accion = 'APLICAR_RIEGO';
-        else if (balance > (cfg ? cfg.umbral_max : 80)) accion = 'DETENER_RIEGO';
-        if (accion === 'MANTENER') continue;
+        else if (balance > umbralMax) accion = 'DETENER_RIEGO';
+        const pendParcela = pendientesPorParcela[parcela.id] || [];
+        if (accion === 'MANTENER') {
+          for (const p of pendParcela) { p.estado = 'RECHAZADA'; }
+          continue;
+        }
+        if (pendParcela.some(p => p.accion === accion)) continue;
+        for (const p of pendParcela) { p.estado = 'RECHAZADA'; }
         const deficit = Math.max(0, umbralMin - balance);
-        const vol = Math.round(deficit * p.areaM2 * 0.07);
+        const vol = Math.round(deficit * parcela.areaM2 * 0.07);
         const urg = deficit > 20 ? 'CRÍTICO' : deficit > 10 ? 'ALTO' : deficit > 5 ? 'MEDIO' : 'BAJO';
         const id = nextRecId++;
         recomendaciones.push({
-          id, parcelaId: p.id, nombreParcela: p.nombre, cultivo: p.cultivo,
+          id, parcelaId: parcela.id, nombreParcela: parcela.nombre, cultivo: parcela.cultivo,
           volumenSugeridoL: vol, accion, estado: 'PENDIENTE', urgencia: urg,
           usuarioAprobador: null, timestamp_generacion: ahora(),
-          nombre_parcela: p.nombre, volumen_sugerido_L: vol
+          nombre_parcela: parcela.nombre, volumen_sugerido_L: vol
         });
-        generadas.push({ id, parcelaId: p.id, nombre: p.nombre, accion, urgencia: urg, volumen: vol });
+        generadas.push({ id, parcelaId: parcela.id, nombre: parcela.nombre, accion, urgencia: urg, volumen: vol });
       }
       persistir();
       return { success: true, generadas };
@@ -225,10 +237,28 @@
       const r = recomendaciones.find(x => x.id === id);
       if (r) {
         r.estado = 'EJECUTADA';
-        const lect = ultimaLecturaParcela(r.parcelaId);
-        if (lect) {
-          if (r.accion === 'APLICAR_RIEGO') lect.humedadSuelo = Math.min(lect.humedadSuelo + 30 + rand(0, 10), 95);
-          else if (r.accion === 'DETENER_RIEGO') lect.humedadSuelo = Math.max(lect.humedadSuelo - 25, configs[r.parcelaId]?.umbral_min || 40);
+        const ultima = ultimaLecturaParcela(r.parcelaId);
+        if (ultima) {
+          const cfg = configs[r.parcelaId];
+          const umbralMax = cfg ? cfg.umbral_max : 80;
+          const umbralMin = cfg ? cfg.umbral_min : 40;
+          let humedadPost;
+          if (r.accion === 'APLICAR_RIEGO') {
+            humedadPost = Math.min(Math.max(ultima.humedadSuelo + 30, umbralMax + 10), 95);
+          } else if (r.accion === 'DETENER_RIEGO') {
+            humedadPost = Math.max(ultima.humedadSuelo - 25, umbralMin);
+          } else {
+            humedadPost = ultima.humedadSuelo;
+          }
+          const newId = lecturas.length + 1;
+          lecturas.push({
+            id: newId, parcelaId: r.parcelaId,
+            humedadSuelo: humedadPost,
+            temperaturaAmbiente: ultima.temperaturaAmbiente,
+            humedadRelativa: ultima.humedadRelativa,
+            origen: 'MANUAL', esValida: true, usuarioRegistro: usuario,
+            timestampRegistro: ahora(), nombreParcela: ultima.nombreParcela
+          });
         }
         persistir();
       }
