@@ -3,3 +3,5 @@ node_modules/
 *.log
 dist/
 docs/jsdoc/
+export/
+demo-web.html

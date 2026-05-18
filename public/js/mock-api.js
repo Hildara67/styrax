@@ -37,10 +37,11 @@
   const configs = (saved && saved.configs) ? saved.configs : JSON.parse(JSON.stringify(SEMILLA_CONFIGS));
   let lecturas = (saved && saved.lecturas) ? saved.lecturas : [];
   let recomendaciones = (saved && saved.recomendaciones) ? saved.recomendaciones : [];
+  let usuariosDB = (saved && saved.usuarios) ? saved.usuarios : JSON.parse(JSON.stringify(usuarios));
   let nextRecId = (saved && saved.nextRecId) ? saved.nextRecId : 100;
 
   function persistir() {
-    guardarData({ parcelas, configs, lecturas, recomendaciones, nextRecId });
+    guardarData({ parcelas, configs, lecturas, recomendaciones, usuarios: usuariosDB, nextRecId });
   }
 
   function rand(min, max) { return Math.round((min + Math.random() * (max - min)) * 10) / 10; }
@@ -70,7 +71,7 @@
     login: async (creds) => {
       const username = creds.usuario || creds.nombre;
       const password = creds.password || creds.contrasena;
-      const u = usuarios.find(x => x.nombre === username && x.password === password);
+      const u = usuariosDB.find(x => x.nombre === username && x.password === password);
       if (!u) return { success: false, error: 'Credenciales incorrectas' };
       sessionStorage.setItem('usuario', JSON.stringify({ id: u.id, nombre: u.nombre, rol: u.rol }));
       return { success: true, usuario: { id: u.id, nombre: u.nombre, rol: u.rol } };
@@ -106,7 +107,11 @@
       return { success: true };
     },
     contarParcelas: async () => parcelas.length,
-    resumenParcelas: async () => ({ total: parcelas.length, conRiego: recomendaciones.filter(r => r.accion === 'APLICAR_RIEGO').length }),
+    resumenParcelas: async () => parcelas.map(p => {
+      const lects = lecturas.filter(l => l.parcelaId === p.id);
+      const recs = recomendaciones.filter(r => r.parcelaId === p.id);
+      return { nombre: p.nombre, area_m2: p.areaM2, cultivo: p.cultivo, total_lecturas: lects.length, total_recomendaciones: recs.length };
+    }),
 
     insertarLectura: async (data) => {
       const id = lecturas.length + 1;
@@ -127,7 +132,7 @@
     ultimasLecturas: async () => lecturas,
     historialLecturas: async (filtros) => {
       let r = [...lecturas];
-      if (filtros?.parcelaId) r = r.filter(l => l.parcelaId === filtros.parcelaId);
+      if (filtros?.parcelaId) r = r.filter(l => l.parcelaId === Number(filtros.parcelaId));
       return r.sort((a, b) => (b.id || 0) - (a.id || 0));
     },
     indicadoresLecturas: async () => {
@@ -288,14 +293,15 @@
     probarAPI: async () => ({ conectado: true }),
     probarBD: async () => ({ conectado: true }),
 
-    listarUsuarios: async () => usuarios.map(u => ({ id: u.id, nombre: u.nombre, rol: u.rol, activo: true })),
+    listarUsuarios: async () => usuariosDB.map(u => ({ id: u.id, nombre: u.nombre, rol: u.rol, activo: true })),
     crearUsuario: async (data) => {
-      const id = usuarios.length + 1;
-      usuarios.push({ id, nombre: data.nombre, rol: data.rol, password: data.password });
+      const id = usuariosDB.length + 1;
+      usuariosDB.push({ id, nombre: data.nombre, rol: data.rol, password: data.password });
+      persistir();
       return { success: true, id };
     },
     desactivarUsuario: async () => ({ success: true }),
-    listarOperadores: async () => usuarios.filter(u => u.rol === 'OPERADOR'),
+    listarOperadores: async () => usuariosDB.filter(u => u.rol === 'OPERADOR'),
 
     leerCSV: async () => {
       const datos = parcelas.map(p => {

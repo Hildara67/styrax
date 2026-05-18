@@ -111,3 +111,4 @@ document.getElementById('btnExportarCSV').addEventListener('click', async functi
 });
 
 cargarParcelas();
+cargarHistorial();
