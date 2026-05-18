@@ -217,6 +217,11 @@
       if (r) { r.estado = 'RECHAZADA'; persistir(); }
       return { success: true };
     },
+    rechazarTodasPendientes: async () => {
+      recomendaciones.filter(r => r.estado === 'PENDIENTE').forEach(r => { r.estado = 'RECHAZADA'; });
+      persistir();
+      return { success: true };
+    },
     estadisticasRecomendaciones: async () => {
       const ejecutadas = recomendaciones.filter(r => r.estado === 'EJECUTADA');
       return {

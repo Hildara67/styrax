@@ -169,12 +169,27 @@ document.getElementById('btnExportarCSV').addEventListener('click', async functi
   }
 });
 
+document.getElementById('btnGenerarRecomendaciones').addEventListener('click', async function() {
+  mostrarCarga('Regenerando recomendaciones...');
+  try {
+    await window.api.rechazarTodasPendientes();
+    await autoGenerarRecomendaciones();
+    await cargarRecomendaciones();
+  } catch (err) {
+    mostrarToast('Error: ' + err.message, 'error');
+  } finally {
+    ocultarCarga();
+  }
+});
+
 async function autoGenerarRecomendaciones() {
   mostrarCarga('Generando recomendaciones...');
   try {
     const result = await window.api.generarRecomendacionesTodas(usuario.id);
     if (result.success && result.generadas && result.generadas.length > 0) {
       mostrarToast(`Se generaron ${result.generadas.length} recomendaciones`, 'success');
+    } else {
+      mostrarToast('No se requieren nuevas recomendaciones', 'success');
     }
   } catch (err) {
     console.warn('No se pudieron auto-generar recomendaciones:', err.message);
