@@ -107,10 +107,31 @@
     historialLecturas: async (filtros) => {
       let r = [...lecturas];
       if (filtros?.parcelaId) r = r.filter(l => l.parcelaId === filtros.parcelaId);
-      return r;
+      return r.sort((a, b) => (b.id || 0) - (a.id || 0));
     },
-    indicadoresLecturas: async () => ({ optimas: 1, alertas: 1, deficit: 1 }),
-    estadisticasLecturas: async () => ({ total: lecturas.length, optimas: 1, alertas: 1, deficit: 1 }),
+    indicadoresLecturas: async () => {
+      if (lecturas.length === 0) return { optimas: 0, alertas: 0, deficit: 0 };
+      const eto = ETO_BASE[etoIdx % ETO_BASE.length];
+      let optimas = 0, alertas = 0, deficit = 0;
+      for (const l of lecturas) {
+        const cfg = configs[l.parcelaId];
+        const umbralMin = cfg ? cfg.umbral_min : 40;
+        const umbralMax = cfg ? cfg.umbral_max : 80;
+        const kc = cfg ? cfg.kc_actual : 1.0;
+        const balance = l.humedadSuelo - (kc * eto);
+        if (balance >= umbralMin && balance <= umbralMax) optimas++;
+        else if (balance < umbralMin) deficit++;
+        else alertas++;
+      }
+      return { optimas, alertas, deficit };
+    },
+    estadisticasLecturas: async () => {
+      const ind = await api.indicadoresLecturas();
+      const hum = lecturas.reduce((s, l) => s + l.humedadSuelo, 0);
+      const temp = lecturas.reduce((s, l) => s + (l.temperaturaAmbiente || 0), 0);
+      const n = lecturas.length || 1;
+      return { total_lecturas: lecturas.length, humedad_promedio: +(hum / n).toFixed(2), temp_promedio: +(temp / n).toFixed(2), optimas: ind.optimas, alertas: ind.alertas, deficit: ind.deficit };
+    },
 
     listarRecomendacionesPendientes: async () => recomendaciones.filter(r => r.estado === 'PENDIENTE'),
     listarRecomendaciones: async () => recomendaciones,
@@ -196,18 +217,23 @@
       if (r) { r.estado = 'RECHAZADA'; persistir(); }
       return { success: true };
     },
-    estadisticasRecomendaciones: async () => ({
-      pendientes: recomendaciones.filter(r => r.estado === 'PENDIENTE').length,
-      ejecutadas: recomendaciones.filter(r => r.estado === 'EJECUTADA').length,
-      rechazadas: recomendaciones.filter(r => r.estado === 'RECHAZADA').length
-    }),
+    estadisticasRecomendaciones: async () => {
+      const ejecutadas = recomendaciones.filter(r => r.estado === 'EJECUTADA');
+      return {
+        total: recomendaciones.length,
+        pendientes: recomendaciones.filter(r => r.estado === 'PENDIENTE').length,
+        ejecutadas: ejecutadas.length,
+        rechazadas: recomendaciones.filter(r => r.estado === 'RECHAZADA').length,
+        volumen_ejecutado: ejecutadas.reduce((s, r) => s + (r.volumenSugeridoL || 0), 0)
+      };
+    },
 
     obtenerConfig: async (parcelaId) => configs[parcelaId] || null,
     guardarConfig: async (data) => {
       configs[data.parcelaId] = { ...configs[data.parcelaId], ...data };
       return { success: true };
     },
-    probarAPI: async () => ({ conectado: false }),
+    probarAPI: async () => ({ conectado: true }),
     probarBD: async () => ({ conectado: true }),
 
     listarUsuarios: async () => usuarios.map(u => ({ id: u.id, nombre: u.nombre, rol: u.rol, activo: true })),
@@ -258,7 +284,7 @@
 
     exportarCSV: async () => ({ success: true }),
     exportarCSVDialog: async () => ({ success: true, canceled: false }),
-    exportarRespaldo: async () => ({ success: true }),
+    exportarRespaldo: async (path) => ({ success: true, ruta: path || 'respaldo.json' }),
   };
 
   if (!window.api) {
