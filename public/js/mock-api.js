@@ -45,6 +45,10 @@
 
   function rand(min, max) { return Math.round((min + Math.random() * (max - min)) * 10) / 10; }
   function ahora() { return new Date().toISOString().replace('T', ' ').slice(0, 19); }
+  function ultimaLecturaParcela(parcelaId) {
+    const todas = lecturas.filter(l => l.parcelaId === parcelaId);
+    return todas.length > 0 ? todas.reduce((a, b) => a.id > b.id ? a : b) : null;
+  }
 
   function seedLecturas() {
     if (lecturas.length > 0) return;
@@ -187,7 +191,7 @@
       }
       const generadas = [];
       for (const p of parcelas) {
-        const lect = lecturas.find(l => l.parcelaId === p.id);
+        const lect = ultimaLecturaParcela(p.id);
         if (!lect) continue;
         const eto = ETO_BASE[etoIdx % ETO_BASE.length];
         const cfg = configs[p.id];
@@ -221,7 +225,7 @@
       const r = recomendaciones.find(x => x.id === id);
       if (r) {
         r.estado = 'EJECUTADA';
-        const lect = lecturas.find(l => l.parcelaId === r.parcelaId);
+        const lect = ultimaLecturaParcela(r.parcelaId);
         if (lect) {
           if (r.accion === 'APLICAR_RIEGO') lect.humedadSuelo = Math.min(lect.humedadSuelo + 30 + rand(0, 10), 95);
           else if (r.accion === 'DETENER_RIEGO') lect.humedadSuelo = Math.max(lect.humedadSuelo - 25, configs[r.parcelaId]?.umbral_min || 40);
