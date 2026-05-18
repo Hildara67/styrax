@@ -354,9 +354,7 @@ h1, h2, h3, h4, h5 {
 
 .credential-hint {
   margin-top: 8px;
-  padding: 10px 12px;
-  background: #f8f6f1;
-  border-radius: var(--radio-sm);
+  padding: 8px 0;
   font-size: 13px;
   color: var(--gris-500);
   text-align: center;
